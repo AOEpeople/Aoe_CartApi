@@ -1,0 +1,14 @@
+{
+  "name": "aoepeople/aoe_api2",
+  "description": "More resources for Magento's Api2 (REST)",
+  "authors": [
+    {
+      "name": "Fabrizio Branca",
+      "email": "{firstname}.{lastname}@aoe.com"
+    }
+  ],
+  "type": "magento-module",
+  "require": {
+    "magento-hackathon/magento-composer-installer": "*"
+  }
+}
