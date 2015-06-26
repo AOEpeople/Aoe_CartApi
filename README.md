@@ -1,6 +1,6 @@
 [![AOE](aoe-logo.png)](http://www.aoe.com)
 
-# Aoe_CartApi Magento Module
+# Aoe_CartApi Magento Module [![Build Status](https://travis-ci.org/AOEpeople/Aoe_CartApi.svg?branch=master)](https://travis-ci.org/AOEpeople/Aoe_CartApi)
 
 NOTE: This module is NOT ready for public consuption. Once it is ready we will tag a 1.0.0 version.
 
