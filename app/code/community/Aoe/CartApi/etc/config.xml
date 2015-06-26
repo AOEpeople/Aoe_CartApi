@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Aoe_CartApi>
+            <version>0.0.1</version>
+        </Aoe_CartApi>
+    </modules>
+    <global>
+        <helpers>
+            <Aoe_CartApi>
+                <class>Aoe_CartApi_Helper</class>
+            </Aoe_CartApi>
+        </helpers>
+        <models>
+            <Aoe_CartApi>
+                <class>Aoe_CartApi_Model</class>
+            </Aoe_CartApi>
+        </models>
+    </global>
+</config>

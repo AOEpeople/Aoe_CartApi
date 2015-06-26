@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<config>
+    <api2>
+        <resource_groups>
+            <Aoe_CartApi translate="title" module="Aoe_CartApi">
+                <title>AOE CartApi</title>
+                <sort_order>100</sort_order>
+            </Aoe_CartApi>
+        </resource_groups>
+        <resources>
+            <cart translate="title" module="Aoe_CartApi">
+                <versions>1</versions>
+                <group>Aoe_CartApi</group>
+                <model>Aoe_CartApi/Cart</model>
+                <title>Cart</title>
+                <sort_order>10</sort_order>
+                <privileges/>
+                <attributes translate="" module="Aoe_CartApi"/>
+                <exclude_attributes/>
+                <routes/>
+            </cart>
+        </resources>
+    </api2>
+</config>

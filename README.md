@@ -1,4 +1,8 @@
-# Aoe_CartApi
+[![AOE](aoe-logo.png)](http://www.aoe.com)
+
+# Aoe_CartApi Magento Module
+
+NOTE: This module is NOT ready for public consuption. Once it is ready we will tag a 1.0.0 version.
 
 NOTE: Following "documentation" is just a dump of some notes while planning this API.
 
@@ -107,3 +111,8 @@ Add/update shipping address
 
 ### POST /api/rest/cart/place
 place order
+
+## NOTES
+* This module is currently being written for PHP 5.4+ and Magento CE 1.8+ support only.
+* Once PHP 5.4 hits EOL, the minimum requirements will be updated to reflect this.
+* Once/if Magento CE 1.10 is released then support for Magento CE 1.8 will be dropped.

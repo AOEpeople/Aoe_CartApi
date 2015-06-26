@@ -1,13 +1,13 @@
 <?xml version="1.0" ?>
 <config>
     <modules>
-        <Aoe_Api2>
+        <Aoe_CartApi>
             <active>true</active>
             <codePool>community</codePool>
             <depends>
                 <Mage_Core/>
                 <Mage_Api2/>
             </depends>
-        </Aoe_Api2>
+        </Aoe_CartApi>
     </modules>
 </config>
