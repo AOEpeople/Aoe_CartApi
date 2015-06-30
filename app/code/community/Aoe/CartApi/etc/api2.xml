@@ -2,23 +2,251 @@
 <config>
     <api2>
         <resource_groups>
-            <Aoe_CartApi translate="title" module="Aoe_CartApi">
+            <aoe_cartapi translate="title" module="Aoe_CartApi">
                 <title>AOE CartApi</title>
                 <sort_order>100</sort_order>
-            </Aoe_CartApi>
+            </aoe_cartapi>
         </resource_groups>
         <resources>
-            <cart translate="title" module="Aoe_CartApi">
+            <aoe_cartapi_cart translate="title" module="Aoe_CartApi">
                 <versions>1</versions>
-                <group>Aoe_CartApi</group>
+                <group>aoe_cartapi</group>
                 <model>Aoe_CartApi/Cart</model>
                 <title>Cart</title>
                 <sort_order>10</sort_order>
-                <privileges/>
-                <attributes translate="" module="Aoe_CartApi"/>
-                <exclude_attributes/>
-                <routes/>
-            </cart>
+                <privileges>
+                    <guest>
+                        <create>1</create>
+                        <retrieve>1</retrieve>
+                        <update>1</update>
+                        <delete>1</delete>
+                    </guest>
+                    <customer>
+                        <create>1</create>
+                        <retrieve>1</retrieve>
+                        <update>1</update>
+                        <delete>1</delete>
+                    </customer>
+                </privileges>
+                <attributes translate="" module="Aoe_CartApi">
+                    <coupon_code>Coupon Code</coupon_code>
+                    <items>Items</items>
+                    <billing_address>Billing Address</billing_address>
+                    <shipping_address>Shipping Address</shipping_address>
+                    <payment>Payment</payment>
+                </attributes>
+                <exclude_attributes>
+                    <guest>
+                        <write>
+                            <items>1</items>
+                            <billing_address>1</billing_address>
+                            <shipping_address>1</shipping_address>
+                            <payment>1</payment>
+                        </write>
+                    </guest>
+                    <customer>
+                        <write>
+                            <items>1</items>
+                            <billing_address>1</billing_address>
+                            <shipping_address>1</shipping_address>
+                            <payment>1</payment>
+                        </write>
+                    </customer>
+                </exclude_attributes>
+                <routes>
+                    <route_entity>
+                        <route>/cart</route>
+                        <action_type>entity</action_type>
+                    </route_entity>
+                </routes>
+            </aoe_cartapi_cart>
+            <aoe_cartapi_item translate="title" module="Aoe_CartApi">
+                <versions>1</versions>
+                <group>aoe_cartapi</group>
+                <model>Aoe_CartApi/Item</model>
+                <title>Item</title>
+                <sort_order>20</sort_order>
+                <privileges>
+                    <guest>
+                        <create>1</create>
+                        <retrieve>1</retrieve>
+                        <update>1</update>
+                        <delete>1</delete>
+                    </guest>
+                    <customer>
+                        <create>1</create>
+                        <retrieve>1</retrieve>
+                        <update>1</update>
+                        <delete>1</delete>
+                    </customer>
+                </privileges>
+                <attributes translate="" module="Aoe_CartApi">
+                    <item_id>Item ID (internal)</item_id>
+                    <sku>SKU</sku>
+                    <name>Name</name>
+                    <qty>Quantity</qty>
+                </attributes>
+                <exclude_attributes>
+                    <customer>
+                        <write>
+                            <item_id>1</item_id>
+                            <name>1</name>
+                        </write>
+                    </customer>
+                    <guest>
+                        <write>
+                            <item_id>1</item_id>
+                            <name>1</name>
+                        </write>
+                    </guest>
+                </exclude_attributes>
+                <routes>
+                    <route_collection>
+                        <route>/cart/items</route>
+                        <action_type>collection</action_type>
+                    </route_collection>
+                    <route_entity>
+                        <route>/cart/items/:id</route>
+                        <action_type>entity</action_type>
+                    </route_entity>
+                </routes>
+            </aoe_cartapi_item>
+            <aoe_cartapi_billing_address translate="title" module="Aoe_CartApi">
+                <versions>1</versions>
+                <group>aoe_cartapi</group>
+                <model>Aoe_CartApi/BillingAddress</model>
+                <title>Billing Address</title>
+                <sort_order>30</sort_order>
+                <privileges>
+                    <guest>
+                        <create>1</create>
+                        <retrieve>1</retrieve>
+                        <update>1</update>
+                        <delete>1</delete>
+                    </guest>
+                    <customer>
+                        <create>1</create>
+                        <retrieve>1</retrieve>
+                        <update>1</update>
+                        <delete>1</delete>
+                    </customer>
+                </privileges>
+                <attributes translate="" module="Aoe_CartApi">
+                    <customer_address_id>customer_address_id</customer_address_id>
+                    <prefix>prefix</prefix>
+                    <firstname>firstname</firstname>
+                    <middlename>middlename</middlename>
+                    <lastname>lastname</lastname>
+                    <suffix>suffix</suffix>
+                    <company>company</company>
+                    <street>street</street>
+                    <city>city</city>
+                    <region>region</region>
+                    <postcode>postcode</postcode>
+                    <country_id>country_id</country_id>
+                    <telephone>telephone</telephone>
+                    <fax>fax</fax>
+                    <save_in_address_book>save_in_address_book</save_in_address_book>
+                </attributes>
+                <exclude_attributes>
+                    <guest>
+                        <read>
+                            <customer_address_id>1</customer_address_id>
+                            <save_in_address_book>1</save_in_address_book>
+                        </read>
+                        <write>
+                            <customer_address_id>1</customer_address_id>
+                            <save_in_address_book>1</save_in_address_book>
+                        </write>
+                    </guest>
+                </exclude_attributes>
+                <routes>
+                    <route_entity>
+                        <route>/cart/billing_address</route>
+                        <action_type>entity</action_type>
+                    </route_entity>
+                </routes>
+            </aoe_cartapi_billing_address>
+            <aoe_cartapi_shipping_address translate="title" module="Aoe_CartApi">
+                <versions>1</versions>
+                <group>aoe_cartapi</group>
+                <model>Aoe_CartApi/ShippingAddress</model>
+                <title>Shipping Address</title>
+                <sort_order>40</sort_order>
+                <privileges>
+                    <guest>
+                        <create>1</create>
+                        <retrieve>1</retrieve>
+                        <update>1</update>
+                        <delete>1</delete>
+                    </guest>
+                    <customer>
+                        <create>1</create>
+                        <retrieve>1</retrieve>
+                        <update>1</update>
+                        <delete>1</delete>
+                    </customer>
+                </privileges>
+                <attributes translate="" module="Aoe_CartApi">
+                    <customer_address_id>customer_address_id</customer_address_id>
+                    <same_as_billing>same_as_billing</same_as_billing>
+                    <prefix>prefix</prefix>
+                    <firstname>firstname</firstname>
+                    <middlename>middlename</middlename>
+                    <lastname>lastname</lastname>
+                    <suffix>suffix</suffix>
+                    <company>company</company>
+                    <street>street</street>
+                    <city>city</city>
+                    <region>region</region>
+                    <postcode>postcode</postcode>
+                    <country_id>country_id</country_id>
+                    <telephone>telephone</telephone>
+                    <fax>fax</fax>
+                    <save_in_address_book>save_in_address_book</save_in_address_book>
+                    <method>Shipping Method</method>
+                    <currency>Currency Code</currency>
+                    <subtotal>Items Subtotal</subtotal>
+                    <discount>Discount Amount</discount>
+                    <shipping>Shipping Amount</shipping>
+                    <tax>Tax Amount</tax>
+                    <total>Grand Total</total>
+                </attributes>
+                <exclude_attributes>
+                    <guest>
+                        <read>
+                            <customer_address_id>1</customer_address_id>
+                            <save_in_address_book>1</save_in_address_book>
+                        </read>
+                        <write>
+                            <customer_address_id>1</customer_address_id>
+                            <save_in_address_book>1</save_in_address_book>
+                            <currency>1</currency>
+                            <subtotal>1</subtotal>
+                            <discount>1</discount>
+                            <shipping>1</shipping>
+                            <tax>1</tax>
+                            <total>1</total>
+                        </write>
+                    </guest>
+                    <customer>
+                        <write>
+                            <currency>1</currency>
+                            <subtotal>1</subtotal>
+                            <discount>1</discount>
+                            <shipping>1</shipping>
+                            <tax>1</tax>
+                            <total>1</total>
+                        </write>
+                    </customer>
+                </exclude_attributes>
+                <routes>
+                    <route_entity>
+                        <route>/cart/shipping_address</route>
+                        <action_type>entity</action_type>
+                    </route_entity>
+                </routes>
+            </aoe_cartapi_shipping_address>
         </resources>
     </api2>
 </config>

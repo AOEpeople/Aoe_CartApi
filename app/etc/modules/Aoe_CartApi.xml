@@ -7,6 +7,9 @@
             <depends>
                 <Mage_Core/>
                 <Mage_Api2/>
+                <Mage_Sales/>
+                <Mage_Checkout/>
+                <Mage_Customer/>
             </depends>
         </Aoe_CartApi>
     </modules>
