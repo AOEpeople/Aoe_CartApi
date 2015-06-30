@@ -10,6 +10,6 @@ if [ "${URL}" == "" -o "${USERNAME}" == "" -o "${PASSWORD}" == "" ]; then
 fi
 
 DATA="{\"login\":\"${USERNAME}\", \"password\":\"${PASSWORD}\"}"
-SESSION=`curl -s -H "Content-Type: application/json" -X POST -d "${DATA}" -D - "${URL}" | grep 'Set-Cookie' | tail -n1 | sed -En 's/^Set-Cookie: frontend=([^;]+).*/\1/p'`
+SESSION=`curl -s -H "Content-Type: application/json" -X POST -d "${DATA}" -D - "${URL}/session/customer" | grep 'Set-Cookie' | tail -n1 | sed -En 's/^Set-Cookie: frontend=([^;]+).*/\1/p'`
 
 echo $SESSION
