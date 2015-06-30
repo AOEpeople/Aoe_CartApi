@@ -8,7 +8,7 @@ class Aoe_CartApi_Model_Cart_Rest_V1 extends Aoe_CartApi_Model_Resource
      * @var string[]
      */
     protected $attributeMap = [
-        'id' => 'entity_id',
+        'id'       => 'entity_id',
         'currency' => 'quote_currency_code',
     ];
 
@@ -34,7 +34,7 @@ class Aoe_CartApi_Model_Cart_Rest_V1 extends Aoe_CartApi_Model_Resource
                 $this->_render($this->prepareResource($quote));
                 break;
             case self::ACTION_TYPE_ENTITY . self::OPERATION_DELETE:
-                if($quote->getId()) {
+                if ($quote->getId()) {
                     $quote->setIsActive(false);
                     $this->saveQuote();
                     //$quote->delete();
@@ -97,6 +97,16 @@ class Aoe_CartApi_Model_Cart_Rest_V1 extends Aoe_CartApi_Model_Resource
         // Filter raw outbound data
         $data = $this->getFilter()->out($data);
 
+        // Fix data types
+        $data = $this->fixTypes($data);
+
+        // Add null values for missing data
+        foreach ($this->getFilter()->getAttributesToInclude() as $code) {
+            if (!array_key_exists($code, $data)) {
+                $data[$code] = null;
+            }
+        }
+
         // Sort the result by key
         ksort($data);
 
@@ -140,13 +150,13 @@ class Aoe_CartApi_Model_Cart_Rest_V1 extends Aoe_CartApi_Model_Resource
         $failedValidation = false;
 
         $resource->collectTotals();
-        if(isset($data['coupon_code']) && $resource->getCouponCode() != $data['coupon_code']) {
+        if (isset($data['coupon_code']) && $resource->getCouponCode() != $data['coupon_code']) {
             $failedValidation = true;
             $message = Mage::helper('checkout')->__('Coupon code "%s" is not valid.', $data['coupon_code']);
             $this->getResponse()->setException(new Mage_Api2_Exception($message, Mage_Api2_Model_Server::HTTP_BAD_REQUEST));
         }
 
-        if($failedValidation) {
+        if ($failedValidation) {
             $this->_critical('Failed validation', Mage_Api2_Model_Server::HTTP_BAD_REQUEST);
         }
 

@@ -116,6 +116,16 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
         // Filter raw outbound data
         $data = $this->getFilter()->out($data);
 
+        // Fix data types
+        $data = $this->fixTypes($data);
+
+        // Add null values for missing data
+        foreach ($this->getFilter()->getAttributesToInclude() as $code) {
+            if (!array_key_exists($code, $data)) {
+                $data[$code] = null;
+            }
+        }
+
         // Sort the result by key
         ksort($data);
 
