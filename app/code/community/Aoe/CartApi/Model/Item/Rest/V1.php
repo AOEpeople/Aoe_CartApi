@@ -101,6 +101,9 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
             // Filter raw outbound data
             $itemData = $filter->out($itemData);
 
+            // Add image URLs
+            $itemData['images'] = $this->getImageUrls($item->getProduct());
+
             // Fix data types
             $itemData = $this->fixTypes($itemData);
 
@@ -144,6 +147,9 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
 
         // Filter raw outbound data
         $data = $this->getFilter()->out($data);
+
+        // Add image URLs
+        $itemData['images'] = $this->getImageUrls($resource->getProduct());
 
         // Fix data types
         $data = $this->fixTypes($data);
@@ -284,5 +290,39 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
         }
 
         return $item;
+    }
+
+    protected function getImageUrls(Mage_Catalog_Model_Product $product)
+    {
+        $data = array();
+
+        /** @var Mage_Catalog_Helper_Image $helper */
+        $helper = Mage::helper('catalog/image');
+
+        // Add normal URL
+        $helper->init($product, 'image');
+        $size = Mage::getStoreConfig(Mage_Catalog_Helper_Image::XML_NODE_PRODUCT_BASE_IMAGE_WIDTH);
+        if (is_numeric($size)) {
+            $helper->constrainOnly(true)->resize($size);
+        }
+        $data['normal'] = $helper->__toString();
+
+        // Add small URL
+        $helper->init($product, 'small_image');
+        $size = Mage::getStoreConfig(Mage_Catalog_Helper_Image::XML_NODE_PRODUCT_SMALL_IMAGE_WIDTH);
+        if (is_numeric($size)) {
+            $helper->constrainOnly(true)->resize($size);
+        }
+        $data['small'] = $helper->__toString();
+
+        // Add thumbnail URL
+        $helper->init($product, 'thumbnail');
+        $size = Mage::getStoreConfig('catalog/product_image/thumbnail_width');
+        if (is_numeric($size)) {
+            $helper->constrainOnly(true)->resize($size);
+        }
+        $data['thumbnail'] = $helper->__toString();
+
+        return $data;
     }
 }

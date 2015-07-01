@@ -17,4 +17,11 @@
             </Aoe_CartApi>
         </models>
     </global>
+    <default>
+        <catalog>
+            <product_image>
+                <thumbnail_width>100</thumbnail_width>
+            </product_image>
+        </catalog>
+    </default>
 </config>

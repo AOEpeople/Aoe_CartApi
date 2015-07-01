@@ -10,6 +10,7 @@
                 <Mage_Sales/>
                 <Mage_Checkout/>
                 <Mage_Customer/>
+                <Mage_Catalog/>
             </depends>
         </Aoe_CartApi>
     </modules>
