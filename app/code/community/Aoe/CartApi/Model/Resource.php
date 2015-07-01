@@ -97,9 +97,12 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
      */
     protected function fixTypes(array $data)
     {
-        foreach($this->attributeTypeMap as $code => $type) {
-            if(array_key_exists($code, $data) && is_string($data[$code])) {
-                switch($type) {
+        // This makes me a bit nervous
+        $currencyCode = $this->loadQuote()->getQuoteCurrencyCode();
+
+        foreach ($this->attributeTypeMap as $code => $type) {
+            if (array_key_exists($code, $data) && is_string($data[$code])) {
+                switch ($type) {
                     case 'int':
                         $data[$code] = intval($data[$code]);
                         break;
@@ -107,8 +110,18 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
                         $data[$code] = floatval($data[$code]);
                         break;
                     case 'currency':
-                        // TODO: add better processing to this
-                        $data[$code] = floatval($data[$code]);
+                        $amount = floatval($data[$code]);
+                        $precision = Zend_Locale_Data::getContent(null, 'currencyfraction', $currencyCode);
+                        if ($precision === false) {
+                            $precision = Zend_Locale_Data::getContent(null, 'currencyfraction');
+                        }
+                        if ($precision !== false) {
+                            $amount = round($amount, $precision);
+                            $formatted = Mage::app()->getLocale()->currency($currencyCode)->toCurrency($amount, array('precision' => $precision));
+                        } else {
+                            $formatted = Mage::app()->getLocale()->currency($currencyCode)->toCurrency($amount);
+                        }
+                        $data[$code] = array('currency' => $currencyCode, 'amount' => $amount, 'formatted' => $formatted);
                         break;
                 }
             }
