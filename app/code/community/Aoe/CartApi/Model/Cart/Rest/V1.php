@@ -8,8 +8,7 @@ class Aoe_CartApi_Model_Cart_Rest_V1 extends Aoe_CartApi_Model_Resource
      * @var string[]
      */
     protected $attributeMap = [
-        'qty'      => 'float',
-        'total'    => 'grand_total',
+        'total' => 'grand_total',
     ];
 
     /**
@@ -18,6 +17,7 @@ class Aoe_CartApi_Model_Cart_Rest_V1 extends Aoe_CartApi_Model_Resource
      * @var string[]
      */
     protected $attributeTypeMap = [
+        'qty'   => 'float',
         'total' => 'currency',
     ];
 
