@@ -15,10 +15,11 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
      * @var string[]
      */
     protected $attributeTypeMap = [
-        'item_id'   => 'int',
-        'qty'       => 'float',
-        'price'     => 'currency',
-        'row_total' => 'currency',
+        'item_id'        => 'int',
+        'qty'            => 'float',
+        'original_price' => 'currency',
+        'price'          => 'currency',
+        'row_total'      => 'currency',
     ];
 
     /**
@@ -91,6 +92,9 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
             // Get raw outbound data
             $itemData = $item->toArray();
 
+            // Manual data addition
+            $itemData['original_price'] = $item->getProduct()->getPrice();
+
             // Map data keys
             $itemData = $this->unmapAttributes($itemData);
 
@@ -131,6 +135,9 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
 
         // Get raw outbound data
         $data = $resource->toArray();
+
+        // Manual data addition
+        $itemData['original_price'] = $resource->getProduct()->getPrice();
 
         // Map data keys
         $data = $this->unmapAttributes($data);
