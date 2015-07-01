@@ -48,6 +48,8 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
         /** @var Mage_Checkout_Model_Session $session */
         $session = Mage::getSingleton('checkout/session');
         $quote = $session->getQuote();
+        $quote->getBillingAddress();
+        $quote->getShippingAddress()->setCollectShippingRates(true);
         $quote->collectTotals();
         $quote->save();
         $session->setQuoteId($quote->getId());
