@@ -12,33 +12,108 @@ NOTE: Following "documentation" is just a dump of some notes while planning this
 Return the current users cart with all subentities
 ```
 {
-	messages: [], -  review for later
-	id: "",
-	items: [{
-		sku: "",
-		quantity: 5
-	}, {
-	}],
-	billing_address: {
-	},
-	shipping_address: {
-	},
-	payment: { <- spearate resource
-	},
-	shipping_method: "", <- string attribute
-	coupon: "",
-	totals: {
-	}
+    messages: [], -  review for later
+    qty: 5,
+    items: {
+        "139303": {
+            "item_id": 139303,
+            "sku": "ABC123",
+            "name": "Thing #1",
+            "qty": 5,
+            "original_price": {
+                "formatted": "$0.00",
+                "amount": 0,
+                "currency": "USD"
+            },
+            "price": {
+                "formatted": "$0.00",
+                "amount": 0,
+                "currency": "USD"
+            },
+            "row_total": {
+                "formatted": "$0.00",
+                "amount": 0,
+                "currency": "USD"
+            },
+            "images": {
+                "thumbnail": "<url>",
+                "small": "<url>",
+                "normal": "<url>"
+            }
+        }
+    },
+    billing_address: {
+        "customer_address_id": null,
+        "prefix": null,
+        "firstname": null,
+        "lastname": null,
+        "middlename": null
+        "suffix": null,
+        "company": null,
+        "street": null,
+        "city": null,
+        "region": null,
+        "postcode": null,
+        "country_id": null,
+        "telephone": null,
+        "fax": null,
+        "save_in_address_book": false,
+    },
+    shipping_address: {
+        "customer_address_id": null,
+        "prefix": null,
+        "firstname": null,
+        "middlename": null,
+        "lastname": null,
+        "suffix": null,
+        "company": null,
+        "street": null,
+        "city": null,
+        "region": null,
+        "postcode": null,
+        "country_id": null,
+        "telephone": null,
+        "fax": null,
+        "same_as_billing": true,
+        "save_in_address_book": false
+        "method": "flatrate_flatrate",
+        "total": {
+            "formatted": "$0.00",
+            "amount": 0,
+            "currency": "USD"
+        },
+        "tax": {
+            "formatted": "$0.00",
+            "amount": 0,
+            "currency": "USD"
+        },
+        "subtotal": {
+            "formatted": "$0.00",
+            "amount": 0,
+            "currency": "USD"
+        },
+        "shipping": {
+            "formatted": "$0.00",
+            "amount": 0,
+            "currency": "USD"
+        },
+        "discount": {
+            "formatted": "$0.00",
+            "amount": 0,
+            "currency": "USD"
+        },
+    },
+    payment: {},
+    coupon: ""
 }
 ```
 
 ### POST /api/rest/cart
 - modify direct attributes of the cart
-- shipping_method
 - coupon
 ```
 {
-	"shipping_method": "s_ground_ground"
+	"coupon": "FREESTUFF"
 }
 ```
 
@@ -84,19 +159,91 @@ Updating payment method:
 
 ### GET /api/rest/cart/items
 get collection of cart items
-
-### POST /api/rest/cart/items
+```
+{
+    "139303": {
+        "item_id": 139303,
+        "sku": "ABC123",
+        "name": "Thing #1",
+        "qty": 5,
+        "original_price": {
+            "formatted": "$0.00",
+            "amount": 0,
+            "currency": "USD"
+        },
+        "price": {
+            "formatted": "$0.00",
+            "amount": 0,
+            "currency": "USD"
+        },
+        "row_total": {
+            "formatted": "$0.00",
+            "amount": 0,
+            "currency": "USD"
+        },
+        "images": {
+            "thumbnail": "<url>",
+            "small": "<url>",
+            "normal": "<url>"
+        }
+    }
+}
+```
+### POST /api/rest/cart/items (will try to re-use and existing item if possible, qty is optional)
 create new cart item
+```
+{
+	"sku": "ABC123"
+	"qty": 1
+}
+```
 
 ### GET /api/rest/cart/items/:item_id
 get single item
+```
+{
+    "item_id": 139303,
+    "sku": "ABC123",
+    "name": "Thing #1",
+    "qty": 5,
+    "original_price": {
+        "formatted": "$0.00",
+        "amount": 0,
+        "currency": "USD"
+    },
+    "price": {
+        "formatted": "$0.00",
+        "amount": 0,
+        "currency": "USD"
+    },
+    "row_total": {
+        "formatted": "$0.00",
+        "amount": 0,
+        "currency": "USD"
+    },
+    "images": {
+        "thumbnail": "<url>",
+        "small": "<url>",
+        "normal": "<url>"
+    }
+}
+```
 
 ### POST /api/rest/cart/items/:item_id (implictly delete with qty=0)
 remove/update item
+```
+{
+	"qty": 4
+}
+```
+```
+{
+	"qty": 0
+}
+```
 
 ### DELETE /api/rest/cart/items/:item_id
 remove item
-
 
 
 ## Other sub-resources
