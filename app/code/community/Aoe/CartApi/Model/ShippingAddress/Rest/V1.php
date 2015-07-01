@@ -21,11 +21,14 @@ class Aoe_CartApi_Model_ShippingAddress_Rest_V1 extends Aoe_CartApi_Model_Resour
      * @var string[]
      */
     protected $attributeTypeMap = [
-        'subtotal' => 'currency',
-        'shipping' => 'currency',
-        'discount' => 'currency',
-        'tax'      => 'currency',
-        'total'    => 'currency',
+        'customer_address_id'  => 'int',
+        'same_as_billing'      => 'bool',
+        'save_in_address_book' => 'bool',
+        'subtotal'             => 'currency',
+        'shipping'             => 'currency',
+        'discount'             => 'currency',
+        'tax'                  => 'currency',
+        'total'                => 'currency',
     ];
 
     /**

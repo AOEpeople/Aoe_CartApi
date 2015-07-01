@@ -10,6 +10,16 @@ class Aoe_CartApi_Model_BillingAddress_Rest_V1 extends Aoe_CartApi_Model_Resourc
     protected $attributeMap = [];
 
     /**
+     * Hash of external attribute codes and their data type
+     *
+     * @var string[]
+     */
+    protected $attributeTypeMap = [
+        'save_in_address_book' => 'bool',
+        'customer_address_id'  => 'int',
+    ];
+
+    /**
      * Dispatch API call
      */
     public function dispatch()

@@ -8,8 +8,17 @@ class Aoe_CartApi_Model_Cart_Rest_V1 extends Aoe_CartApi_Model_Resource
      * @var string[]
      */
     protected $attributeMap = [
-        'id'       => 'entity_id',
-        'currency' => 'quote_currency_code',
+        'qty'      => 'float',
+        'total'    => 'grand_total',
+    ];
+
+    /**
+     * Hash of external attribute codes and their data type
+     *
+     * @var string[]
+     */
+    protected $attributeTypeMap = [
+        'total' => 'currency',
     ];
 
     /**
@@ -64,11 +73,14 @@ class Aoe_CartApi_Model_Cart_Rest_V1 extends Aoe_CartApi_Model_Resource
         // Get raw outbound data
         $data = $resource->toArray();
 
-        // Special handling for shipping method (yuck)
-        $data['shipping_method'] = $resource->getShippingAddress()->getShippingMethod();
-
         // Map data keys
         $data = $this->unmapAttributes($data);
+
+        // Shipping method - REF
+        $data['shipping_method'] = $resource->getShippingAddress()->getShippingMethod();
+
+        // Cart qty summary - REF
+        $data['qty'] = (Mage::getStoreConfig('checkout/cart_link/use_qty') ? $resource->getItemsQty() : $resource->getItemsCount());
 
         // Add in cart items
         if (in_array('items', $this->getFilter()->getAllowedAttributes()) && $this->_isSubCallAllowed('aoe_cartapi_item')) {

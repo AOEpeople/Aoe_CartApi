@@ -2,8 +2,24 @@
 
 class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
 {
-    /** @var string[] */
+    /**
+     * Hash of external/internal attribute codes
+     *
+     * @var string[]
+     */
     protected $attributeMap = [];
+
+    /**
+     * Hash of external attribute codes and their data type
+     *
+     * @var string[]
+     */
+    protected $attributeTypeMap = [
+        'item_id'   => 'int',
+        'qty'       => 'float',
+        'price'     => 'currency',
+        'row_total' => 'currency',
+    ];
 
     /**
      * Dispatch API call
@@ -30,11 +46,13 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
             case self::ACTION_TYPE_ENTITY . self::OPERATION_CREATE:
                 $item = $this->loadItem($quote, $this->getRequest()->getParam('id'));
                 $this->updateResource($item, $this->getRequest()->getBodyParams());
+                $this->saveQuote();
                 $this->_render($this->prepareResource($item));
                 break;
             case self::ACTION_TYPE_ENTITY . self::OPERATION_UPDATE:
                 $item = $this->loadItem($quote, $this->getRequest()->getParam('id'));
                 $this->updateResource($item, $this->getRequest()->getBodyParams());
+                $this->saveQuote();
                 $this->_render($this->prepareResource($item));
                 break;
             case self::ACTION_TYPE_ENTITY . self::OPERATION_DELETE:
@@ -66,6 +84,7 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
 
         $data = array();
 
+        $filter = $this->getFilter();
         foreach ($quote->getAllVisibleItems() as $item) {
             /** @var Mage_Sales_Model_Quote_Item $item */
 
@@ -76,7 +95,10 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
             $itemData = $this->unmapAttributes($itemData);
 
             // Filter raw outbound data
-            $itemData = $this->getFilter()->out($itemData);
+            $itemData = $filter->out($itemData);
+
+            // Fix data types
+            $itemData = $this->fixTypes($itemData);
 
             // Add data to result
             $data[$item->getId()] = $itemData;

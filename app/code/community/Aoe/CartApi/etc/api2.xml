@@ -30,10 +30,14 @@
                 </privileges>
                 <attributes translate="" module="Aoe_CartApi">
                     <coupon_code>Coupon Code</coupon_code>
+                    <!-- View-only -->
                     <items>Items</items>
                     <billing_address>Billing Address</billing_address>
                     <shipping_address>Shipping Address</shipping_address>
                     <payment>Payment</payment>
+                    <shipping_method>Shipping Method</shipping_method>
+                    <qty>Summary Quantity</qty>
+                    <total>Grand Total</total>
                 </attributes>
                 <exclude_attributes>
                     <guest>
@@ -42,6 +46,9 @@
                             <billing_address>1</billing_address>
                             <shipping_address>1</shipping_address>
                             <payment>1</payment>
+                            <shipping_method>1</shipping_method>
+                            <qty>1</qty>
+                            <total>1</total>
                         </write>
                     </guest>
                     <customer>
@@ -50,6 +57,9 @@
                             <billing_address>1</billing_address>
                             <shipping_address>1</shipping_address>
                             <payment>1</payment>
+                            <shipping_method>1</shipping_method>
+                            <qty>1</qty>
+                            <total>1</total>
                         </write>
                     </customer>
                 </exclude_attributes>
@@ -85,18 +95,27 @@
                     <sku>SKU</sku>
                     <name>Name</name>
                     <qty>Quantity</qty>
+                    <price>Price</price>
+                    <original_price>Original Price</original_price>
+                    <row_total>Row Total</row_total>
                 </attributes>
                 <exclude_attributes>
                     <customer>
                         <write>
                             <item_id>1</item_id>
                             <name>1</name>
+                            <price>1</price>
+                            <original_price>1</original_price>
+                            <row_total>1</row_total>
                         </write>
                     </customer>
                     <guest>
                         <write>
                             <item_id>1</item_id>
                             <name>1</name>
+                            <price>1</price>
+                            <original_price>1</original_price>
+                            <row_total>1</row_total>
                         </write>
                     </guest>
                 </exclude_attributes>
@@ -205,7 +224,6 @@
                     <fax>fax</fax>
                     <save_in_address_book>save_in_address_book</save_in_address_book>
                     <method>Shipping Method</method>
-                    <currency>Currency Code</currency>
                     <subtotal>Items Subtotal</subtotal>
                     <discount>Discount Amount</discount>
                     <shipping>Shipping Amount</shipping>
@@ -221,7 +239,6 @@
                         <write>
                             <customer_address_id>1</customer_address_id>
                             <save_in_address_book>1</save_in_address_book>
-                            <currency>1</currency>
                             <subtotal>1</subtotal>
                             <discount>1</discount>
                             <shipping>1</shipping>
@@ -231,7 +248,6 @@
                     </guest>
                     <customer>
                         <write>
-                            <currency>1</currency>
                             <subtotal>1</subtotal>
                             <discount>1</discount>
                             <shipping>1</shipping>
