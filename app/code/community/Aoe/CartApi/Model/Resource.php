@@ -103,6 +103,9 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
         foreach ($this->attributeTypeMap as $code => $type) {
             if (array_key_exists($code, $data) && is_string($data[$code])) {
                 switch ($type) {
+                    case 'bool':
+                        $data[$code] = (!empty($data[$code]) && strtolower($data[$code]) !== 'false');
+                        break;
                     case 'int':
                         $data[$code] = intval($data[$code]);
                         break;
