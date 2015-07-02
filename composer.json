@@ -1,6 +1,6 @@
 {
     "name": "aoepeople/aoe_cartapi",
-    "description": "More resources for Magento's Api2 (REST)",
+    "description": "Magento REST(ish) Cart API based on Mage_Api2",
     "authors": [
         {
             "name": "Fabrizio Branca",
