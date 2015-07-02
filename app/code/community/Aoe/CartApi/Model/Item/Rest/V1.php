@@ -58,7 +58,7 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
                 break;
             case self::ACTION_TYPE_ENTITY . self::OPERATION_DELETE:
                 $item = $this->loadItem($quote, $this->getRequest()->getParam('id'));
-                $quote->getItemsCollection()->removeItemByKey($item->getId());
+                $quote->deleteItem($item);
                 $item->delete();
                 $this->saveQuote();
                 $this->getResponse()->setMimeType($this->getRenderer()->getMimeType());
