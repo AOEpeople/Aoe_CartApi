@@ -126,6 +126,10 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
                         }
                         $data[$code] = array('currency' => $currencyCode, 'amount' => $amount, 'formatted' => $formatted);
                         break;
+                    case 'string':
+                    default:
+                        $data[$code] = (string)$data[$code];
+                        break;
                 }
             }
         }
