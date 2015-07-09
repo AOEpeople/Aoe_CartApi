@@ -224,11 +224,6 @@
                     <fax>fax</fax>
                     <save_in_address_book>save_in_address_book</save_in_address_book>
                     <method>Shipping Method</method>
-                    <subtotal>Items Subtotal</subtotal>
-                    <discount>Discount Amount</discount>
-                    <shipping>Shipping Amount</shipping>
-                    <tax>Tax Amount</tax>
-                    <total>Grand Total</total>
                 </attributes>
                 <exclude_attributes>
                     <guest>
@@ -239,22 +234,8 @@
                         <write>
                             <customer_address_id>1</customer_address_id>
                             <save_in_address_book>1</save_in_address_book>
-                            <subtotal>1</subtotal>
-                            <discount>1</discount>
-                            <shipping>1</shipping>
-                            <tax>1</tax>
-                            <total>1</total>
                         </write>
                     </guest>
-                    <customer>
-                        <write>
-                            <subtotal>1</subtotal>
-                            <discount>1</discount>
-                            <shipping>1</shipping>
-                            <tax>1</tax>
-                            <total>1</total>
-                        </write>
-                    </customer>
                 </exclude_attributes>
                 <routes>
                     <route_entity>

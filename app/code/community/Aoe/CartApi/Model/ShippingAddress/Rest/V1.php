@@ -8,11 +8,7 @@ class Aoe_CartApi_Model_ShippingAddress_Rest_V1 extends Aoe_CartApi_Model_Resour
      * @var string[]
      */
     protected $attributeMap = [
-        'method'   => 'shipping_method',
-        'shipping' => 'shipping_amount',
-        'discount' => 'discount_amount',
-        'tax'      => 'tax_amount',
-        'total'    => 'grand_total',
+        'method' => 'shipping_method',
     ];
 
     /**
@@ -24,11 +20,6 @@ class Aoe_CartApi_Model_ShippingAddress_Rest_V1 extends Aoe_CartApi_Model_Resour
         'customer_address_id'  => 'int',
         'same_as_billing'      => 'bool',
         'save_in_address_book' => 'bool',
-        'subtotal'             => 'currency',
-        'shipping'             => 'currency',
-        'discount'             => 'currency',
-        'tax'                  => 'currency',
-        'total'                => 'currency',
     ];
 
     /**
