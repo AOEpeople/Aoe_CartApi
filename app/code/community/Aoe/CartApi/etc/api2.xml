@@ -101,6 +101,7 @@
                     <price>Price</price>
                     <original_price>Original Price</original_price>
                     <row_total>Row Total</row_total>
+                    <messages>Messages</messages>
                 </attributes>
                 <exclude_attributes>
                     <customer>
@@ -110,6 +111,7 @@
                             <price>1</price>
                             <original_price>1</original_price>
                             <row_total>1</row_total>
+                            <messages>1</messages>
                         </write>
                     </customer>
                     <guest>
@@ -119,6 +121,7 @@
                             <price>1</price>
                             <original_price>1</original_price>
                             <row_total>1</row_total>
+                            <messages>1</messages>
                         </write>
                     </guest>
                 </exclude_attributes>

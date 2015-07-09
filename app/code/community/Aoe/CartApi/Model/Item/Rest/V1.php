@@ -96,6 +96,7 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
 
             // Manual data addition
             $itemData['original_price'] = $item->getProduct()->getPrice();
+            $itemData['messages'] = $item->getMessage(false);
 
             // Map data keys
             $itemData = $this->unmapAttributes($itemData);
@@ -143,6 +144,7 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
 
         // Manual data addition
         $data['original_price'] = $resource->getProduct()->getPrice();
+        $data['messages'] = $resource->getMessage(false);
 
         // Map data keys
         $data = $this->unmapAttributes($data);

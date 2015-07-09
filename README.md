@@ -38,7 +38,11 @@ Return the current users cart with all subentities
                 "thumbnail": "<url>",
                 "small": "<url>",
                 "normal": "<url>"
-            }
+            },
+            "messages": [
+                "message",
+                "message"
+            ]
         }
     },
     billing_address: {
