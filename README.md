@@ -39,6 +39,7 @@ Return the current users cart with all subentities
                 "small": "<url>",
                 "normal": "<url>"
             },
+            "backorder_qty": 0,
             "messages": [
                 "message",
                 "message"

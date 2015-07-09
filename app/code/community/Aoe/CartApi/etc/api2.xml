@@ -101,6 +101,7 @@
                     <price>Price</price>
                     <original_price>Original Price</original_price>
                     <row_total>Row Total</row_total>
+                    <backorder_qty>Backorder Quantity</backorder_qty>
                     <messages>Messages</messages>
                 </attributes>
                 <exclude_attributes>
@@ -111,6 +112,7 @@
                             <price>1</price>
                             <original_price>1</original_price>
                             <row_total>1</row_total>
+                            <backorder_qty>1</backorder_qty>
                             <messages>1</messages>
                         </write>
                     </customer>
@@ -121,6 +123,7 @@
                             <price>1</price>
                             <original_price>1</original_price>
                             <row_total>1</row_total>
+                            <backorder_qty>1</backorder_qty>
                             <messages>1</messages>
                         </write>
                     </guest>

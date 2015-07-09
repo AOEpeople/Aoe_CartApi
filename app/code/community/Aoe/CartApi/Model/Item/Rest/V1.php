@@ -20,6 +20,7 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
         'original_price' => 'currency',
         'price'          => 'currency',
         'row_total'      => 'currency',
+        'backorder_qty'  => 'float',
     ];
 
     /**
@@ -96,6 +97,7 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
 
             // Manual data addition
             $itemData['original_price'] = $item->getProduct()->getPrice();
+            $itemData['backorder_qty'] = floatval($item->getBackorders());
             $itemData['messages'] = $item->getMessage(false);
 
             // Map data keys
@@ -144,6 +146,7 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
 
         // Manual data addition
         $data['original_price'] = $resource->getProduct()->getPrice();
+        $data['backorder_qty'] = floatval($resource->getBackorders());
         $data['messages'] = $resource->getMessage(false);
 
         // Map data keys
