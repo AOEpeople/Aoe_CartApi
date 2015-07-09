@@ -111,6 +111,12 @@ Return the current users cart with all subentities
             "amount": 0,
             "currency": "USD"
         }
+    },
+    "messages": {
+        "type (e.g. error, notice, success)": [
+            "message",
+            "message"
+        ]
     }
 }
 ```

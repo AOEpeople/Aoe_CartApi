@@ -38,6 +38,7 @@
                     <shipping_method>Shipping Method</shipping_method>
                     <qty>Summary Quantity</qty>
                     <totals>Totals</totals>
+                    <messages>Messages</messages>
                 </attributes>
                 <exclude_attributes>
                     <guest>
@@ -49,6 +50,7 @@
                             <shipping_method>1</shipping_method>
                             <qty>1</qty>
                             <totals>1</totals>
+                            <messages>1</messages>
                         </write>
                     </guest>
                     <customer>
@@ -60,6 +62,7 @@
                             <shipping_method>1</shipping_method>
                             <qty>1</qty>
                             <totals>1</totals>
+                            <messages>1</messages>
                         </write>
                     </customer>
                 </exclude_attributes>

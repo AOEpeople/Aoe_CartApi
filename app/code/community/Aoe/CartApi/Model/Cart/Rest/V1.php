@@ -121,6 +121,13 @@ class Aoe_CartApi_Model_Cart_Rest_V1 extends Aoe_CartApi_Model_Resource
             }
         }
 
+        // Add in validation/error messages
+        $data['messages'] = array();
+        foreach ($resource->getMessages() as $message) {
+            /** @var Mage_Core_Model_Message_Abstract $message */
+            $data['messages'][$message->getType()][] = $message->getText();
+        }
+
         // Filter raw outbound data
         $data = $this->getFilter()->out($data);
 
