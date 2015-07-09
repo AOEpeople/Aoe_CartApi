@@ -7,9 +7,7 @@ class Aoe_CartApi_Model_Cart_Rest_V1 extends Aoe_CartApi_Model_Resource
      *
      * @var string[]
      */
-    protected $attributeMap = [
-        'total' => 'grand_total',
-    ];
+    protected $attributeMap = [];
 
     /**
      * Hash of external attribute codes and their data type
@@ -105,6 +103,23 @@ class Aoe_CartApi_Model_Cart_Rest_V1 extends Aoe_CartApi_Model_Resource
 
         // Add in payment
         //TODO
+
+        // Add in totals
+        if (in_array('totals', $this->getFilter()->getAllowedAttributes())) {
+            $totalsValues = array();
+            $totalsTypeMap = array();
+            $totalsTitles = array();
+            foreach ($resource->getTotals() as $code => $total) {
+                /* @var Mage_Sales_Model_Quote_Address_Total_Abstract $total */
+                $totalsValues[$code] = $total->getValue();
+                $totalsTypeMap[$code] = 'currency';
+                $totalsTitles[$code] = $total->getTitle();
+            }
+            $data['totals'] = $this->fixTypes($totalsValues, $totalsTypeMap);
+            foreach ($data['totals'] as $code => $total) {
+                $data['totals'][$code]['title'] = $totalsTitles[$code];
+            }
+        }
 
         // Filter raw outbound data
         $data = $this->getFilter()->out($data);

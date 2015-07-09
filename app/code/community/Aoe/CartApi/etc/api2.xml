@@ -37,7 +37,7 @@
                     <payment>Payment</payment>
                     <shipping_method>Shipping Method</shipping_method>
                     <qty>Summary Quantity</qty>
-                    <total>Grand Total</total>
+                    <totals>Totals</totals>
                 </attributes>
                 <exclude_attributes>
                     <guest>
@@ -48,7 +48,7 @@
                             <payment>1</payment>
                             <shipping_method>1</shipping_method>
                             <qty>1</qty>
-                            <total>1</total>
+                            <totals>1</totals>
                         </write>
                     </guest>
                     <customer>
@@ -59,7 +59,7 @@
                             <payment>1</payment>
                             <shipping_method>1</shipping_method>
                             <qty>1</qty>
-                            <total>1</total>
+                            <totals>1</totals>
                         </write>
                     </customer>
                 </exclude_attributes>
