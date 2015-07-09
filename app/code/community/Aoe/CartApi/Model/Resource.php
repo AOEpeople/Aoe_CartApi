@@ -89,18 +89,26 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
     }
 
     /**
-     * Reverse remap the attribute keys
+     * Type cast array values
      *
      * @param array $data
+     * @param array $typeMap
      *
      * @return array
+     *
+     * @throws Zend_Currency_Exception
+     * @throws Zend_Locale_Exception
      */
-    protected function fixTypes(array $data)
+    protected function fixTypes(array $data, array $typeMap = array())
     {
         // This makes me a bit nervous
         $currencyCode = $this->loadQuote()->getQuoteCurrencyCode();
 
-        foreach ($this->attributeTypeMap as $code => $type) {
+        if(empty($typeMap)) {
+            $typeMap = $this->attributeTypeMap;
+        }
+
+        foreach ($typeMap as $code => $type) {
             if (array_key_exists($code, $data) && is_scalar($data[$code])) {
                 switch ($type) {
                     case 'bool':
