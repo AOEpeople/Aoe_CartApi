@@ -142,7 +142,7 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
         $data = $resource->toArray();
 
         // Manual data addition
-        $itemData['original_price'] = $resource->getProduct()->getPrice();
+        $data['original_price'] = $resource->getProduct()->getPrice();
 
         // Map data keys
         $data = $this->unmapAttributes($data);
@@ -151,7 +151,7 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
         $data = $this->getFilter()->out($data);
 
         // Add image URLs
-        $itemData['images'] = $this->getImageUrls($resource->getProduct());
+        $data['images'] = $this->getImageUrls($resource->getProduct());
 
         // Fix data types
         $data = $this->fixTypes($data);
