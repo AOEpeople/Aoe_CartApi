@@ -12,7 +12,6 @@ NOTE: Following "documentation" is just a dump of some notes while planning this
 Return the current users cart with all subentities
 ```
 {
-    messages: [], -  review for later
     qty: 5,
     items: {
         "139303": {
@@ -76,35 +75,43 @@ Return the current users cart with all subentities
         "fax": null,
         "same_as_billing": true,
         "save_in_address_book": false
-        "method": "flatrate_flatrate",
-        "total": {
-            "formatted": "$0.00",
-            "amount": 0,
-            "currency": "USD"
-        },
-        "tax": {
-            "formatted": "$0.00",
-            "amount": 0,
-            "currency": "USD"
-        },
+        "method": "flatrate_flatrate"
+    },
+    payment: {},
+    shipping_method: "flatrate_flatrate",
+    coupon_code: "",
+    totals: {
         "subtotal": {
+            "title": "Subtotal",
             "formatted": "$0.00",
             "amount": 0,
             "currency": "USD"
         },
         "shipping": {
+            "title": "Shipping",
             "formatted": "$0.00",
             "amount": 0,
             "currency": "USD"
         },
         "discount": {
+            "title": "Discount"
             "formatted": "$0.00",
             "amount": 0,
             "currency": "USD"
         },
-    },
-    payment: {},
-    coupon: ""
+        "tax": {
+            "title": "Tax",
+            "formatted": "$0.00",
+            "amount": 0,
+            "currency": "USD"
+        },
+        "grand_total": {
+            "title": "Grand Total",
+            "formatted": "$0.00",
+            "amount": 0,
+            "currency": "USD"
+        }
+    }
 }
 ```
 
