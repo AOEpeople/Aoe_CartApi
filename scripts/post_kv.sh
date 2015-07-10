@@ -4,6 +4,7 @@ URL=$1
 SESSION=$2
 KEY=$3
 VALUE=$4
+COOKIE=$5
 
 if [ "${URL}" == "" -o "${SESSION}" == "" -o "${KEY}" == "" ]; then
     echo "Usage: $0 <url> <session_token> <key> [<value>]"
@@ -12,4 +13,4 @@ fi
 
 echo "POST ${URL}"
 DATA="{\"${KEY}\":\"${VALUE}\"}"
-curl -v -H "Content-Type: application/json" -H "Cookie: frontend=${SESSION}" -X POST -d "${DATA}" "${URL}" | jq '.'
+curl -v -H "Content-Type: application/json" -H "Cookie: frontend=${SESSION}; ${COOKIE}" -X POST -d "${DATA}" "${URL}" | jq '.'
