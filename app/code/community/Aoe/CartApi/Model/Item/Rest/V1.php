@@ -222,6 +222,12 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
         try {
             $product->setSkipCheckRequiredOption(true);
             $resource = $quote->addProduct($product, new Varien_Object($data));
+
+            // This is to work around a bug in Mage_Sales_Model_Quote::addProductAdvanced
+            // The method incorrectly returns $item when it SHOULD return $parentItem
+            if($resource->getParentItem()) {
+                $resource = $resource->getParentItem();
+            }
         } catch (Exception $e) {
             $resource = $e->getMessage();
         }
