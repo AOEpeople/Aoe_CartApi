@@ -220,6 +220,7 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
 
         // Add product to quote
         try {
+            $product->setSkipCheckRequiredOption(true);
             $resource = $quote->addProduct($product, new Varien_Object($data));
         } catch (Exception $e) {
             $resource = $e->getMessage();
