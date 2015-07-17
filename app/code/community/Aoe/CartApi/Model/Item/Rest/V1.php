@@ -228,7 +228,19 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
         $product = Mage::getModel('catalog/product')
             ->setStoreId(Mage::app()->getStore()->getId())
             ->load(Mage::getResourceModel('catalog/product')->getIdBySku($data['sku']));
+
+        // If there is no product with that SKU, throw an error
         if (!$product->getId()) {
+            $this->_critical('Invalid SKU', Mage_Api2_Model_Server::HTTP_BAD_REQUEST);
+        }
+
+        // If the SKU is not available for the current website, throw an error
+        if (!is_array($product->getWebsiteIds()) || !in_array(Mage::app()->getStore()->getWebsiteId(), $product->getWebsiteIds())) {
+            $this->_critical('Invalid SKU', Mage_Api2_Model_Server::HTTP_BAD_REQUEST);
+        }
+
+        // If the SKU is not saleable, throw an error
+        if (!$product->isSaleable()) {
             $this->_critical('Invalid SKU', Mage_Api2_Model_Server::HTTP_BAD_REQUEST);
         }
 
