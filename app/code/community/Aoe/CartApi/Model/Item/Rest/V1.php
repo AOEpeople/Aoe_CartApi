@@ -91,29 +91,8 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
         $filter = $this->getFilter();
         foreach ($quote->getAllVisibleItems() as $item) {
             /** @var Mage_Sales_Model_Quote_Item $item */
-
-            // Get raw outbound data
-            $itemData = $item->toArray();
-
-            // Manual data addition
-            $itemData['original_price'] = $item->getProduct()->getPrice();
-            $itemData['backorder_qty'] = floatval($item->getBackorders());
-            $itemData['messages'] = $item->getMessage(false);
-
-            // Map data keys
-            $itemData = $this->unmapAttributes($itemData);
-
-            // Filter raw outbound data
-            $itemData = $filter->out($itemData);
-
-            // Add image URLs
-            $itemData['images'] = $this->getImageUrls($item->getProduct());
-
-            // Fix data types
-            $itemData = $this->fixTypes($itemData);
-
             // Add data to result
-            $data[$item->getId()] = $itemData;
+            $data[$item->getId()] = $this->prepareItem($item, $filter);
         }
 
         // Restore old state
@@ -142,27 +121,52 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
         $this->setOperation(self::OPERATION_RETRIEVE);
 
         // Get raw outbound data
-        $data = $resource->toArray();
+        $data = $this->prepareItem($resource, $this->getFilter());
 
-        // Manual data addition
-        $data['original_price'] = $resource->getProduct()->getPrice();
-        $data['backorder_qty'] = floatval($resource->getBackorders());
-        $data['messages'] = $resource->getMessage(false);
+        // Restore old state
+        $this->setActionType($actionType);
+        $this->setOperation($operation);
+
+        // Return prepared outbound data
+        return $data;
+    }
+
+    protected function prepareItem(Mage_Sales_Model_Quote_Item $item, Mage_Api2_Model_Acl_Filter $filter)
+    {
+        // Get raw outbound data
+        $data = $item->toArray();
 
         // Map data keys
         $data = $this->unmapAttributes($data);
 
         // Filter raw outbound data
-        $data = $this->getFilter()->out($data);
+        $data = $filter->out($data);
+
+        // Add original price
+        if (in_array('original_price', $filter->getAttributesToInclude())) {
+            $data['original_price'] = $item->getProduct()->getPrice();
+        }
+
+        // Add backorder quantity
+        if (in_array('backorder_qty', $filter->getAttributesToInclude())) {
+            $data['backorder_qty'] = floatval($item->getBackorders());
+        }
 
         // Add image URLs
-        $data['images'] = $this->getImageUrls($resource->getProduct());
+        if (in_array('images', $filter->getAttributesToInclude())) {
+            $data['images'] = $this->getImageUrls($item->getProduct());
+        }
+
+        // Add messages
+        if (in_array('messages', $filter->getAttributesToInclude())) {
+            $data['messages'] = $item->getMessage(false);
+        }
 
         // Fix data types
         $data = $this->fixTypes($data);
 
         // Add null values for missing data
-        foreach ($this->getFilter()->getAttributesToInclude() as $code) {
+        foreach ($filter->getAttributesToInclude() as $code) {
             if (!array_key_exists($code, $data)) {
                 $data[$code] = null;
             }
@@ -171,11 +175,6 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
         // Sort the result by key
         ksort($data);
 
-        // Restore old state
-        $this->setActionType($actionType);
-        $this->setOperation($operation);
-
-        // Return prepared outbound data
         return $data;
     }
 
@@ -225,7 +224,7 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
 
             // This is to work around a bug in Mage_Sales_Model_Quote::addProductAdvanced
             // The method incorrectly returns $item when it SHOULD return $parentItem
-            if($resource->getParentItem()) {
+            if ($resource->getParentItem()) {
                 $resource = $resource->getParentItem();
             }
         } catch (Exception $e) {

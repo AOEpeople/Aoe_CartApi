@@ -97,11 +97,12 @@
                     <item_id>Item ID (internal)</item_id>
                     <sku>SKU</sku>
                     <name>Name</name>
+                    <images>Images</images>
                     <qty>Quantity</qty>
-                    <price>Price</price>
-                    <original_price>Original Price</original_price>
-                    <row_total>Row Total</row_total>
                     <backorder_qty>Backorder Quantity</backorder_qty>
+                    <original_price>Original Price</original_price>
+                    <price>Price</price>
+                    <row_total>Row Total</row_total>
                     <messages>Messages</messages>
                 </attributes>
                 <exclude_attributes>
@@ -109,10 +110,11 @@
                         <write>
                             <item_id>1</item_id>
                             <name>1</name>
-                            <price>1</price>
-                            <original_price>1</original_price>
-                            <row_total>1</row_total>
+                            <images>1</images>
                             <backorder_qty>1</backorder_qty>
+                            <original_price>1</original_price>
+                            <price>1</price>
+                            <row_total>1</row_total>
                             <messages>1</messages>
                         </write>
                     </customer>
@@ -120,10 +122,11 @@
                         <write>
                             <item_id>1</item_id>
                             <name>1</name>
-                            <price>1</price>
-                            <original_price>1</original_price>
-                            <row_total>1</row_total>
+                            <images>1</images>
                             <backorder_qty>1</backorder_qty>
+                            <original_price>1</original_price>
+                            <price>1</price>
+                            <row_total>1</row_total>
                             <messages>1</messages>
                         </write>
                     </guest>
