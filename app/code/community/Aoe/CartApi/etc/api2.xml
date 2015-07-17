@@ -98,6 +98,7 @@
                     <sku>SKU</sku>
                     <name>Name</name>
                     <images>Images</images>
+                    <children>Child Items</children>
                     <qty>Quantity</qty>
                     <backorder_qty>Backorder Quantity</backorder_qty>
                     <original_price>Original Price</original_price>
@@ -111,6 +112,7 @@
                             <item_id>1</item_id>
                             <name>1</name>
                             <images>1</images>
+                            <children>1</children>
                             <backorder_qty>1</backorder_qty>
                             <original_price>1</original_price>
                             <price>1</price>
@@ -123,6 +125,7 @@
                             <item_id>1</item_id>
                             <name>1</name>
                             <images>1</images>
+                            <children>1</children>
                             <backorder_qty>1</backorder_qty>
                             <original_price>1</original_price>
                             <price>1</price>

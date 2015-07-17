@@ -157,6 +157,20 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
             $data['images'] = $this->getImageUrls($item->getProduct());
         }
 
+        // Add child items
+        if (!$item->getParentItemId() && in_array('children', $filter->getAttributesToInclude())) {
+            $data['children'] = array();
+            foreach ($item->getQuote()->getItemsCollection() as $quoteItem) {
+                /** @var Mage_Sales_Model_Quote_Item $quoteItem */
+                if (!$quoteItem->isDeleted() && $quoteItem->getParentItemId() == $item->getId()) {
+                    $quoteItemData = $this->prepareItem($quoteItem, $filter);
+                    // Remove the children entry from a child as that kind of nesting is not allowed anyway
+                    unset($quoteItemData['children']);
+                    $data['children'][] = $quoteItemData;
+                }
+            }
+        }
+
         // Add messages
         if (in_array('messages', $filter->getAttributesToInclude())) {
             $data['messages'] = $item->getMessage(false);
