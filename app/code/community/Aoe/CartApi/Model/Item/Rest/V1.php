@@ -244,6 +244,20 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
             $this->_critical('Invalid SKU', Mage_Api2_Model_Server::HTTP_BAD_REQUEST);
         }
 
+        // Ensure we have a quantity
+        if (!isset($data['qty'])) {
+            $data['qty'] = 1;
+        }
+        $data['qty'] = floatval($data['qty']);
+
+        // Ensure we have a min quantity if required
+        if (!$quote->hasProductId($product->getId()) && $product->getStockItem()) {
+            $minimumQty = floatval($product->getStockItem()->getMinSaleQty());
+            if ($minimumQty > 0.0 && $data['qty'] < $minimumQty) {
+                $data['qty'] = $minimumQty;
+            }
+        }
+
         // Add product to quote
         try {
             $product->setSkipCheckRequiredOption(true);
