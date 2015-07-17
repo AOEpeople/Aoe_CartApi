@@ -144,7 +144,8 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
 
         // Add original price
         if (in_array('original_price', $filter->getAttributesToInclude())) {
-            $data['original_price'] = $item->getProduct()->getPrice();
+            $product = $item->getProduct();
+            $data['original_price'] = $product->getPriceModel()->getPrice($product);
         }
 
         // Add backorder quantity
