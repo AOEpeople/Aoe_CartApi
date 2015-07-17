@@ -111,7 +111,11 @@ class Aoe_CartApi_Model_Cart_Rest_V1 extends Aoe_CartApi_Model_Resource
         }
 
         // Add in payment
-        //TODO
+        if (in_array('payment', $filter->getAttributesToInclude()) && $this->_isSubCallAllowed('aoe_cartapi_payment')) {
+            /** @var Aoe_CartApi_Model_Payment_Rest_V1 $subModel */
+            $subModel = $this->_getSubModel('aoe_cartapi_payment', array());
+            $data['payment'] = $subModel->prepareResource($resource->getPayment());
+        }
 
         // Add in totals
         if (in_array('totals', $filter->getAttributesToInclude())) {
