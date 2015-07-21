@@ -109,7 +109,7 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
         }
 
         foreach ($typeMap as $code => $type) {
-            if (array_key_exists($code, $data) && is_scalar($data[$code])) {
+            if (array_key_exists($code, $data) && (is_scalar($data[$code]) || is_null($data[$code]))) {
                 switch ($type) {
                     case 'bool':
                         $data[$code] = (!empty($data[$code]) && strtolower($data[$code]) !== 'false');

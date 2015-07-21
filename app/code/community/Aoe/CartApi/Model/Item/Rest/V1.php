@@ -7,7 +7,10 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
      *
      * @var string[]
      */
-    protected $attributeMap = [];
+    protected $attributeMap = [
+        'backorder_qty' => 'backorders',
+        'error_info'    => 'error_infos',
+    ];
 
     /**
      * Hash of external attribute codes and their data type
@@ -134,7 +137,15 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
     protected function prepareItem(Mage_Sales_Model_Quote_Item $item, Mage_Api2_Model_Acl_Filter $filter)
     {
         // Get raw outbound data
-        $data = $item->toArray();
+        $data = array();
+        $exclude = array('original_price', 'images', 'children', 'messages', 'is_saleable');
+        $attributes = $filter->getAttributesToInclude();
+        $attributes = array_diff($attributes, $exclude);
+        $attributes = array_combine($attributes, $attributes);
+        $attributes = $this->mapAttributes($attributes);
+        foreach ($attributes as $key => $attribute) {
+            $data[$attribute] = $item->getDataUsingMethod($key);
+        }
 
         // Map data keys
         $data = $this->unmapAttributes($data);
@@ -146,11 +157,6 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
         if (in_array('original_price', $filter->getAttributesToInclude())) {
             $product = $item->getProduct();
             $data['original_price'] = $product->getPriceModel()->getPrice($product);
-        }
-
-        // Add backorder quantity
-        if (in_array('backorder_qty', $filter->getAttributesToInclude())) {
-            $data['backorder_qty'] = floatval($item->getBackorders());
         }
 
         // Add image URLs
@@ -175,11 +181,6 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
         // Add messages
         if (in_array('messages', $filter->getAttributesToInclude())) {
             $data['messages'] = $item->getMessage(false);
-        }
-
-        // Add error info
-        if (in_array('error_info', $filter->getAttributesToInclude())) {
-            $data['error_info'] = $item->getErrorInfos();
         }
 
         // Add is_saleable flag
