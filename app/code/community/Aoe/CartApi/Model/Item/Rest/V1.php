@@ -182,6 +182,11 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
             $data['error_info'] = $item->getErrorInfos();
         }
 
+        // Add is_saleable flag
+        if (in_array('is_saleable', $filter->getAttributesToInclude())) {
+            $data['is_saleable'] = (bool)$item->getProduct()->getIsSalable();
+        }
+
         // Fix data types
         $data = $this->fixTypes($data);
 

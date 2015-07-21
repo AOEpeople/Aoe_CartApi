@@ -109,6 +109,7 @@
                     <row_total>Row Total</row_total>
                     <messages>Messages</messages>
                     <error_info>Error Info</error_info>
+                    <is_saleable>Is Saleable</is_saleable>
                 </attributes>
                 <exclude_attributes>
                     <customer>
@@ -123,6 +124,7 @@
                             <row_total>1</row_total>
                             <messages>1</messages>
                             <error_info>1</error_info>
+                            <is_saleable>1</is_saleable>
                         </write>
                     </customer>
                     <guest>
@@ -137,6 +139,7 @@
                             <row_total>1</row_total>
                             <messages>1</messages>
                             <error_info>1</error_info>
+                            <is_saleable>1</is_saleable>
                         </write>
                     </guest>
                 </exclude_attributes>
