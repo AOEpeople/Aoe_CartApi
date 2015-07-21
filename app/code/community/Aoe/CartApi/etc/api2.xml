@@ -39,6 +39,7 @@
                     <qty>Summary Quantity</qty>
                     <totals>Totals</totals>
                     <messages>Messages</messages>
+                    <has_error>Has Error</has_error>
                 </attributes>
                 <exclude_attributes>
                     <guest>
@@ -51,6 +52,7 @@
                             <qty>1</qty>
                             <totals>1</totals>
                             <messages>1</messages>
+                            <has_error>1</has_error>
                         </write>
                     </guest>
                     <customer>
@@ -63,6 +65,7 @@
                             <qty>1</qty>
                             <totals>1</totals>
                             <messages>1</messages>
+                            <has_error>1</has_error>
                         </write>
                     </customer>
                 </exclude_attributes>

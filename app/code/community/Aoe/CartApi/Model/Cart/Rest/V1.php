@@ -139,6 +139,11 @@ class Aoe_CartApi_Model_Cart_Rest_V1 extends Aoe_CartApi_Model_Resource
             }
         }
 
+        // Add flag to indicate if the cart has an error or not
+        if (in_array('has_error', $filter->getAttributesToInclude())) {
+            $data['has_error'] = (bool)$resource->getHasError();
+        }
+
         // Add null values for missing data
         foreach ($filter->getAttributesToInclude() as $code) {
             if (!array_key_exists($code, $data)) {
