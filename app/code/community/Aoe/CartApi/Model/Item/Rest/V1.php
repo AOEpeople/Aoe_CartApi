@@ -177,6 +177,11 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
             $data['messages'] = $item->getMessage(false);
         }
 
+        // Add error info
+        if (in_array('error_info', $filter->getAttributesToInclude())) {
+            $data['error_info'] = $item->getErrorInfos();
+        }
+
         // Fix data types
         $data = $this->fixTypes($data);
 

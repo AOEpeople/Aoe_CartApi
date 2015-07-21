@@ -105,6 +105,7 @@
                     <price>Price</price>
                     <row_total>Row Total</row_total>
                     <messages>Messages</messages>
+                    <error_info>Error Info</error_info>
                 </attributes>
                 <exclude_attributes>
                     <customer>
