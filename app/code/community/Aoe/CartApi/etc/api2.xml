@@ -119,6 +119,7 @@
                             <price>1</price>
                             <row_total>1</row_total>
                             <messages>1</messages>
+                            <error_info>1</error_info>
                         </write>
                     </customer>
                     <guest>
@@ -132,6 +133,7 @@
                             <price>1</price>
                             <row_total>1</row_total>
                             <messages>1</messages>
+                            <error_info>1</error_info>
                         </write>
                     </guest>
                 </exclude_attributes>
