@@ -239,11 +239,6 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
             $this->_critical('Invalid SKU', Mage_Api2_Model_Server::HTTP_BAD_REQUEST);
         }
 
-        // If the SKU is not saleable, throw an error
-        if (!$product->isSaleable()) {
-            $this->_critical('Invalid SKU', Mage_Api2_Model_Server::HTTP_BAD_REQUEST);
-        }
-
         // Ensure we have a quantity
         if (!isset($data['qty'])) {
             $data['qty'] = 1;
