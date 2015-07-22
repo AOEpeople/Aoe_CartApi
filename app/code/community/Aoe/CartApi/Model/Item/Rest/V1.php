@@ -39,14 +39,15 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
                 break;
             case self::ACTION_TYPE_COLLECTION . self::OPERATION_CREATE:
                 $item = $this->createResource($quote, $this->getRequest()->getBodyParams());
-                if($item->isObjectNew()) {
+                $new = $item->isObjectNew();
+                $this->saveQuote();
+                if($new) {
                     $this->getResponse()->setHttpResponseCode(Mage_Api2_Model_Server::HTTP_CREATED);
                     $this->getResponse()->setHeader('Location', $this->_getLocation($item));
                 } else {
                     $this->getResponse()->setHttpResponseCode(Mage_Api2_Model_Server::HTTP_OK);
                     $this->getResponse()->setHeader('Content-Location', $this->_getLocation($item));
                 }
-                $this->saveQuote();
                 $this->_render($this->prepareResource($item));
                 break;
             case self::ACTION_TYPE_ENTITY . self::OPERATION_RETRIEVE:
