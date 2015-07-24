@@ -156,9 +156,6 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
         // Map data keys
         $data = $this->unmapAttributes($data);
 
-        // Filter raw outbound data
-        $data = $filter->out($data);
-
         // Add original price
         if (in_array('original_price', $filter->getAttributesToInclude())) {
             $product = $item->getProduct();
@@ -193,6 +190,14 @@ class Aoe_CartApi_Model_Item_Rest_V1 extends Aoe_CartApi_Model_Resource
         if (in_array('is_saleable', $filter->getAttributesToInclude())) {
             $data['is_saleable'] = (bool)$item->getProduct()->getIsSalable();
         }
+
+        // Fire event
+        $data = new Varien_Object($data);
+        Mage::dispatchEvent('aoe_cartapi_item_prepare', array('data' => $data, 'filter' => $filter, 'resource' => $item));
+        $data = $data->getData();
+
+        // Filter outbound data
+        $data = $filter->out($data);
 
         // Fix data types
         $data = $this->fixTypes($data);

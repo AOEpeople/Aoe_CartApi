@@ -83,12 +83,6 @@ class Aoe_CartApi_Model_Cart_Rest_V1 extends Aoe_CartApi_Model_Resource
         // Get a filter instance
         $filter = $this->getFilter();
 
-        // Filter raw outbound data
-        $data = $filter->out($data);
-
-        // Fix data types
-        $data = $this->fixTypes($data);
-
         // Add in cart items
         if (in_array('items', $filter->getAttributesToInclude()) && $this->_isSubCallAllowed('aoe_cartapi_item')) {
             /** @var Aoe_CartApi_Model_Item_Rest_V1 $subModel */
@@ -143,6 +137,17 @@ class Aoe_CartApi_Model_Cart_Rest_V1 extends Aoe_CartApi_Model_Resource
         if (in_array('has_error', $filter->getAttributesToInclude())) {
             $data['has_error'] = (bool)$resource->getHasError();
         }
+
+        // Fire event
+        $data = new Varien_Object($data);
+        Mage::dispatchEvent('aoe_cartapi_cart_prepare', array('data' => $data, 'filter' => $filter, 'resource' => $resource));
+        $data = $data->getData();
+
+        // Filter outbound data
+        $data = $filter->out($data);
+
+        // Fix data types
+        $data = $this->fixTypes($data);
 
         // Add null values for missing data
         foreach ($filter->getAttributesToInclude() as $code) {

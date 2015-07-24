@@ -70,7 +70,12 @@ class Aoe_CartApi_Model_BillingAddress_Rest_V1 extends Aoe_CartApi_Model_Resourc
         // Map data keys
         $data = $this->unmapAttributes($data);
 
-        // Filter raw outbound data
+        // Fire event
+        $data = new Varien_Object($data);
+        Mage::dispatchEvent('aoe_cartapi_billingaddress_prepare', array('data' => $data, 'filter' => $this->getFilter(), 'resource' => $resource));
+        $data = $data->getData();
+
+        // Filter outbound data
         $data = $this->getFilter()->out($data);
 
         // Fix data types
