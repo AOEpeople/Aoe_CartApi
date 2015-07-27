@@ -158,6 +158,13 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
                         $data['shipping_methods'] = $subModel->prepareCollection($resource);
                     }
                     break;
+                case 'crosssells':
+                    if ($this->_isSubCallAllowed('aoe_cartapi_crosssell')) {
+                        /** @var Aoe_CartApi_Model_Crosssell $subModel */
+                        $subModel = $this->_getSubModel('aoe_cartapi_crosssell', []);
+                        $data['crosssells'] = $subModel->prepareCollection($resource);
+                    }
+                    break;
             }
         }
 
