@@ -146,6 +146,20 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
         // Filter outbound data
         $data = $filter->out($data);
 
+        // Handle embeds - This happens after output filtering on purpose
+        $embeds = array_filter(array_map('trim', explode(',', $this->getRequest()->getQuery('embed'))));
+        foreach ($embeds as $embed) {
+            switch ($embed) {
+                case 'shipping_methods':
+                    if ($this->_isSubCallAllowed('aoe_cartapi_shipping_method')) {
+                        /** @var Aoe_CartApi_Model_ShippingMethod $subModel */
+                        $subModel = $this->_getSubModel('aoe_cartapi_shipping_method', array());
+                        $data['shipping_methods'] = $subModel->prepareCollection($resource);
+                    }
+                    break;
+            }
+        }
+
         // Fix data types
         $data = $this->fixTypes($data);
 
