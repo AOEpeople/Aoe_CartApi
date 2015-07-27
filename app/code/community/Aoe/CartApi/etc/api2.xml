@@ -298,6 +298,42 @@
                     </route_collection>
                 </routes>
             </aoe_cartapi_shipping_method>
+            <aoe_cartapi_crosssell>
+                <versions>1</versions>
+                <group>aoe_cartapi</group>
+                <model>Aoe_CartApi/Crosssell</model>
+                <title>Cross-sells</title>
+                <sort_order>60</sort_order>
+                <privileges>
+                    <guest>
+                        <retrieve>1</retrieve>
+                    </guest>
+                    <customer>
+                        <retrieve>1</retrieve>
+                    </customer>
+                </privileges>
+                <attributes translate="" module="Aoe_CartApi">
+                    <sku>SKU</sku>
+                    <name>Product Name</name>
+                    <description>Product Description</description>
+                    <short_description>Product Short Description</short_description>
+                    <url>Product URL</url>
+                    <images>Images</images>
+                    <is_in_stock>Stock Status</is_in_stock>
+                    <price>Price</price>
+                    <final_price>Final Price</final_price>
+                    <is_saleable>Is Saleable</is_saleable>
+                    <qty>Quantity</qty>
+                    <min_sale_qty>Min Sale Quantity</min_sale_qty>
+                    <max_sale_qty>Max Sale Quantity</max_sale_qty>
+                </attributes>
+                <routes>
+                    <route_collection>
+                        <route>/cart/crosssells</route>
+                        <action_type>collection</action_type>
+                    </route_collection>
+                </routes>
+            </aoe_cartapi_crosssell>
         </resources>
     </api2>
 </config>
