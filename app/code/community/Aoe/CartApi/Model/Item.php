@@ -108,6 +108,9 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
         $this->setActionType($actionType);
         $this->setOperation($operation);
 
+        // This collection should always be a key/value hash and never a simple array
+        $data = new ArrayObject($data);
+
         // Return prepared outbound data
         return $data;
     }
