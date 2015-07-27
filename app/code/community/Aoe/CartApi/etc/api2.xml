@@ -268,6 +268,36 @@
                     </route_entity>
                 </routes>
             </aoe_cartapi_shipping_address>
+            <aoe_cartapi_shipping_method translate="title" module="Aoe_CartApi">
+                <versions>1</versions>
+                <group>aoe_cartapi</group>
+                <model>Aoe_CartApi/ShippingMethod</model>
+                <title>Shipping Methods</title>
+                <sort_order>50</sort_order>
+                <privileges>
+                    <guest>
+                        <retrieve>1</retrieve>
+                    </guest>
+                    <customer>
+                        <retrieve>1</retrieve>
+                    </customer>
+                </privileges>
+                <attributes translate="" module="Aoe_CartApi">
+                    <code>Code</code>
+                    <carrier>Carrier Code</carrier>
+                    <carrier_title>Carrier Title</carrier_title>
+                    <method>Method Code</method>
+                    <method_title>Method Title</method_title>
+                    <description>Description</description>
+                    <price>Price</price>
+                </attributes>
+                <routes>
+                    <route_collection>
+                        <route>/cart/shipping_methods</route>
+                        <action_type>collection</action_type>
+                    </route_collection>
+                </routes>
+            </aoe_cartapi_shipping_method>
         </resources>
     </api2>
 </config>
