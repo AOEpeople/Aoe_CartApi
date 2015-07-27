@@ -147,7 +147,8 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
         $data = $filter->out($data);
 
         // Handle embeds - This happens after output filtering on purpose
-        $embeds = array_filter(array_map('trim', explode(',', $this->getRequest()->getQuery('embed'))));
+        $embeds = $this->getRequest()->getQuery('embed');
+        $embeds = array_filter(array_map('trim', (is_array($embeds) ? $embeds : explode(',', $embeds))));
         foreach ($embeds as $embed) {
             switch ($embed) {
                 case 'shipping_methods':
