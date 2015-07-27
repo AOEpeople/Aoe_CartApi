@@ -27,6 +27,7 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
     public function getFilter()
     {
         $this->_filter = null;
+
         return parent::getFilter();
     }
 
@@ -37,6 +38,7 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
     {
         /** @var Mage_Checkout_Model_Session $session */
         $session = Mage::getSingleton('checkout/session');
+
         return $session->getQuote();
     }
 
@@ -53,6 +55,7 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
         $quote->collectTotals();
         $quote->save();
         $session->setQuoteId($quote->getId());
+
         return $quote;
     }
 
