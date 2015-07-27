@@ -95,7 +95,7 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
         $this->setActionType(self::ACTION_TYPE_COLLECTION);
         $this->setOperation(self::OPERATION_RETRIEVE);
 
-        $data = array();
+        $data = [];
 
         $filter = $this->getFilter();
         foreach ($quote->getAllVisibleItems() as $item) {
@@ -146,8 +146,8 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
     protected function prepareItem(Mage_Sales_Model_Quote_Item $item, Mage_Api2_Model_Acl_Filter $filter)
     {
         // Get raw outbound data
-        $data = array();
-        $exclude = array('original_price', 'images', 'children', 'messages', 'is_saleable');
+        $data = [];
+        $exclude = ['original_price', 'images', 'children', 'messages', 'is_saleable'];
         $attributes = $filter->getAttributesToInclude();
         $attributes = array_diff($attributes, $exclude);
         $attributes = array_combine($attributes, $attributes);
@@ -172,7 +172,7 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
 
         // Add child items
         if (!$item->getParentItemId() && in_array('children', $filter->getAttributesToInclude())) {
-            $data['children'] = array();
+            $data['children'] = [];
             foreach ($item->getQuote()->getItemsCollection() as $quoteItem) {
                 /** @var Mage_Sales_Model_Quote_Item $quoteItem */
                 if (!$quoteItem->isDeleted() && $quoteItem->getParentItemId() == $item->getId()) {
@@ -196,7 +196,7 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
 
         // Fire event
         $data = new Varien_Object($data);
-        Mage::dispatchEvent('aoe_cartapi_item_prepare', array('data' => $data, 'filter' => $filter, 'resource' => $item));
+        Mage::dispatchEvent('aoe_cartapi_item_prepare', ['data' => $data, 'filter' => $filter, 'resource' => $item]);
         $data = $data->getData();
 
         // Filter outbound data
@@ -378,7 +378,7 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
 
     protected function getImageUrls(Mage_Catalog_Model_Product $product)
     {
-        $data = array();
+        $data = [];
 
         /** @var Mage_Catalog_Helper_Image $helper */
         $helper = Mage::helper('catalog/image');

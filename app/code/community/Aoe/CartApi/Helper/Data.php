@@ -15,7 +15,7 @@ class Aoe_CartApi_Helper_Data extends Mage_Core_Helper_Data
      */
     public function mapAttributes(array $map, array &$data)
     {
-        $out = array();
+        $out = [];
 
         foreach ($data as $key => &$value) {
             if (isset($map[$key])) {

@@ -86,21 +86,21 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
         // Add in cart items
         if (in_array('items', $filter->getAttributesToInclude()) && $this->_isSubCallAllowed('aoe_cartapi_item')) {
             /** @var Aoe_CartApi_Model_Item $subModel */
-            $subModel = $this->_getSubModel('aoe_cartapi_item', array());
+            $subModel = $this->_getSubModel('aoe_cartapi_item', []);
             $data['items'] = $subModel->prepareCollection($resource);
         }
 
         // Add in billing address
         if (in_array('billing_address', $filter->getAttributesToInclude()) && $this->_isSubCallAllowed('aoe_cartapi_billing_address')) {
             /** @var Aoe_CartApi_Model_BillingAddress $subModel */
-            $subModel = $this->_getSubModel('aoe_cartapi_billing_address', array());
+            $subModel = $this->_getSubModel('aoe_cartapi_billing_address', []);
             $data['billing_address'] = $subModel->prepareResource($resource->getBillingAddress());
         }
 
         // Add in shipping address
         if (in_array('shipping_address', $filter->getAttributesToInclude()) && $this->_isSubCallAllowed('aoe_cartapi_shipping_address')) {
             /** @var Aoe_CartApi_Model_ShippingAddress $subModel */
-            $subModel = $this->_getSubModel('aoe_cartapi_shipping_address', array());
+            $subModel = $this->_getSubModel('aoe_cartapi_shipping_address', []);
             $data['shipping_address'] = $subModel->prepareResource($resource->getShippingAddress());
         }
 
@@ -109,9 +109,9 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
 
         // Add in totals
         if (in_array('totals', $filter->getAttributesToInclude())) {
-            $totalsValues = array();
-            $totalsTypeMap = array();
-            $totalsTitles = array();
+            $totalsValues = [];
+            $totalsTypeMap = [];
+            $totalsTitles = [];
             foreach ($resource->getTotals() as $code => $total) {
                 /* @var Mage_Sales_Model_Quote_Address_Total_Abstract $total */
                 $totalsValues[$code] = $total->getValue();
@@ -126,7 +126,7 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
 
         // Add in validation/error messages
         if (in_array('messages', $filter->getAttributesToInclude())) {
-            $data['messages'] = array();
+            $data['messages'] = [];
             foreach ($resource->getMessages() as $message) {
                 /** @var Mage_Core_Model_Message_Abstract $message */
                 $data['messages'][$message->getType()][] = $message->getText();
@@ -140,7 +140,7 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
 
         // Fire event
         $data = new Varien_Object($data);
-        Mage::dispatchEvent('aoe_cartapi_cart_prepare', array('data' => $data, 'filter' => $filter, 'resource' => $resource));
+        Mage::dispatchEvent('aoe_cartapi_cart_prepare', ['data' => $data, 'filter' => $filter, 'resource' => $resource]);
         $data = $data->getData();
 
         // Filter outbound data
@@ -153,7 +153,7 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
                 case 'shipping_methods':
                     if ($this->_isSubCallAllowed('aoe_cartapi_shipping_method')) {
                         /** @var Aoe_CartApi_Model_ShippingMethod $subModel */
-                        $subModel = $this->_getSubModel('aoe_cartapi_shipping_method', array());
+                        $subModel = $this->_getSubModel('aoe_cartapi_shipping_method', []);
                         $data['shipping_methods'] = $subModel->prepareCollection($resource);
                     }
                     break;

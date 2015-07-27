@@ -72,7 +72,7 @@ class Aoe_CartApi_Model_BillingAddress extends Aoe_CartApi_Model_Resource
 
         // Fire event
         $data = new Varien_Object($data);
-        Mage::dispatchEvent('aoe_cartapi_billingaddress_prepare', array('data' => $data, 'filter' => $this->getFilter(), 'resource' => $resource));
+        Mage::dispatchEvent('aoe_cartapi_billingaddress_prepare', ['data' => $data, 'filter' => $this->getFilter(), 'resource' => $resource]);
         $data = $data->getData();
 
         // Filter outbound data

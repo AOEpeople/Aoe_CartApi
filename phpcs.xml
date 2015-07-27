@@ -24,4 +24,7 @@
             <property name="absoluteLineLimit" value=""/>
         </properties>
     </rule>
+
+    <!-- Enforce short array syntax since this module is PHP 5.4+ -->
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
 </ruleset>

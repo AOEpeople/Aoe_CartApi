@@ -99,7 +99,7 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
      * @throws Zend_Currency_Exception
      * @throws Zend_Locale_Exception
      */
-    protected function fixTypes(array $data, array $typeMap = array())
+    protected function fixTypes(array $data, array $typeMap = [])
     {
         // This makes me a bit nervous
         $currencyCode = $this->loadQuote()->getQuoteCurrencyCode();
@@ -128,11 +128,11 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
                         }
                         if ($precision !== false) {
                             $amount = round($amount, $precision);
-                            $formatted = Mage::app()->getLocale()->currency($currencyCode)->toCurrency($amount, array('precision' => $precision));
+                            $formatted = Mage::app()->getLocale()->currency($currencyCode)->toCurrency($amount, ['precision' => $precision]);
                         } else {
                             $formatted = Mage::app()->getLocale()->currency($currencyCode)->toCurrency($amount);
                         }
-                        $data[$code] = array('currency' => $currencyCode, 'amount' => $amount, 'formatted' => $formatted);
+                        $data[$code] = ['currency' => $currencyCode, 'amount' => $amount, 'formatted' => $formatted];
                         break;
                     case 'string':
                     default:
