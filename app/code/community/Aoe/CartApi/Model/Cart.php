@@ -85,21 +85,21 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
 
         // Add in cart items
         if (in_array('items', $filter->getAttributesToInclude()) && $this->_isSubCallAllowed('aoe_cartapi_item')) {
-            /** @var Aoe_CartApi_Model_Item_Rest_V1 $subModel */
+            /** @var Aoe_CartApi_Model_Item $subModel */
             $subModel = $this->_getSubModel('aoe_cartapi_item', array());
             $data['items'] = $subModel->prepareCollection($resource);
         }
 
         // Add in billing address
         if (in_array('billing_address', $filter->getAttributesToInclude()) && $this->_isSubCallAllowed('aoe_cartapi_billing_address')) {
-            /** @var Aoe_CartApi_Model_BillingAddress_Rest_V1 $subModel */
+            /** @var Aoe_CartApi_Model_BillingAddress $subModel */
             $subModel = $this->_getSubModel('aoe_cartapi_billing_address', array());
             $data['billing_address'] = $subModel->prepareResource($resource->getBillingAddress());
         }
 
         // Add in shipping address
         if (in_array('shipping_address', $filter->getAttributesToInclude()) && $this->_isSubCallAllowed('aoe_cartapi_shipping_address')) {
-            /** @var Aoe_CartApi_Model_ShippingAddress_Rest_V1 $subModel */
+            /** @var Aoe_CartApi_Model_ShippingAddress $subModel */
             $subModel = $this->_getSubModel('aoe_cartapi_shipping_address', array());
             $data['shipping_address'] = $subModel->prepareResource($resource->getShippingAddress());
         }
