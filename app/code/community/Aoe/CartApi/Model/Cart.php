@@ -244,6 +244,11 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
             $resource->setDataUsingMethod($key, $value);
         }
 
+        // Synthetic attributes
+        if (array_key_exists('shipping_method', $data)) {
+            $resource->getShippingAddress()->setShippingMethod($data['shipping_method']);
+        }
+
         $failedValidation = false;
 
         $resource->collectTotals();

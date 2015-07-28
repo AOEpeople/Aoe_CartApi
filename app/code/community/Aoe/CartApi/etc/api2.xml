@@ -30,7 +30,6 @@
                 </privileges>
                 <attributes translate="" module="Aoe_CartApi">
                     <coupon_code>Coupon Code</coupon_code>
-                    <!-- View-only -->
                     <shipping_method>Shipping Method</shipping_method>
                     <qty>Summary Quantity</qty>
                     <totals>Totals</totals>
@@ -40,7 +39,6 @@
                 <exclude_attributes>
                     <guest>
                         <write>
-                            <shipping_method>1</shipping_method>
                             <qty>1</qty>
                             <totals>1</totals>
                             <messages>1</messages>
@@ -49,7 +47,6 @@
                     </guest>
                     <customer>
                         <write>
-                            <shipping_method>1</shipping_method>
                             <qty>1</qty>
                             <totals>1</totals>
                             <messages>1</messages>
