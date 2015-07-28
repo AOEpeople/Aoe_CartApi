@@ -3,11 +3,21 @@
 class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
 {
     /**
+     * Hash of external/internal attribute codes
+     *
+     * @var string[]
+     */
+    protected $attributeMap = [
+        'email' => 'customer_email',
+    ];
+
+    /**
      * Hash of external attribute codes and their data type
      *
      * @var string[]
      */
     protected $attributeTypeMap = [
+        'email'           => 'string',
         'coupon_code'     => 'string',
         'has_error'       => 'bool',
         'shipping_method' => 'string',

@@ -29,6 +29,7 @@
                     </customer>
                 </privileges>
                 <attributes translate="" module="Aoe_CartApi">
+                    <email>Email Address</email>
                     <coupon_code>Coupon Code</coupon_code>
                     <shipping_method>Shipping Method</shipping_method>
                     <qty>Summary Quantity</qty>
