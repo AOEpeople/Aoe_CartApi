@@ -16,6 +16,20 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
      */
     protected $attributeTypeMap = [];
 
+    /**
+     * Array of external attribute codes that are manually generated
+     *
+     * @var string[]
+     */
+    protected $manualAttributes = [];
+
+    /**
+     * Hash of default embed codes
+     *
+     * @var string[]
+     */
+    protected $defaultEmbeds = [];
+
     public function dispatch()
     {
         $this->_critical(self::RESOURCE_METHOD_NOT_ALLOWED);
@@ -146,5 +160,31 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
         }
 
         return $data;
+    }
+
+    /**
+     * @param false|null|string|string[] $embeds
+     *
+     * @return string[]
+     */
+    protected function parseEmbeds($embeds)
+    {
+        if ($embeds === false || $embeds === '') {
+            return [];
+        } elseif ($embeds === null) {
+            return $this->defaultEmbeds;
+        }
+
+        if (is_string($embeds)) {
+            $embeds = explode(',', $embeds);
+        }
+
+        if (is_array($embeds)) {
+            $embeds = array_filter(array_map('trim', $embeds));
+        } else {
+            $embeds = [];
+        }
+
+        return $embeds;
     }
 }

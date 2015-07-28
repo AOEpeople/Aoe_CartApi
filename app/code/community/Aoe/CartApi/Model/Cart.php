@@ -3,21 +3,41 @@
 class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
 {
     /**
-     * Hash of external/internal attribute codes
-     *
-     * @var string[]
-     */
-    protected $attributeMap = [];
-
-    /**
      * Hash of external attribute codes and their data type
      *
      * @var string[]
      */
     protected $attributeTypeMap = [
-        'qty'   => 'float',
-        'total' => 'currency',
+        'coupon_code'     => 'string',
+        'has_error'       => 'bool',
+        'shipping_method' => 'string',
+        'qty'             => 'float',
     ];
+
+    /**
+     * Array of external attribute codes that are manually generated
+     *
+     * @var string[]
+     */
+    protected $manualAttributes = [
+        'shipping_method',
+        'qty',
+        'totals',
+        'messages',
+    ];
+
+    /**
+     * Hash of default embed codes
+     *
+     * @var string[]
+     */
+    protected $defaultEmbeds = [
+        'items',
+        'billing_address',
+        'shipping_address',
+        'payment',
+    ];
+
 
     /**
      * Dispatch API call
@@ -68,44 +88,29 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
         $this->setActionType(self::ACTION_TYPE_ENTITY);
         $this->setOperation(self::OPERATION_RETRIEVE);
 
-        // Get raw outbound data
-        $data = $resource->toArray();
-
-        // Map data keys
-        $data = $this->unmapAttributes($data);
-
-        // Shipping method - REF
-        $data['shipping_method'] = $resource->getShippingAddress()->getShippingMethod();
-
-        // Cart qty summary - REF
-        $data['qty'] = (Mage::getStoreConfig('checkout/cart_link/use_qty') ? $resource->getItemsQty() : $resource->getItemsCount());
-
         // Get a filter instance
         $filter = $this->getFilter();
 
-        // Add in cart items
-        if (in_array('items', $filter->getAttributesToInclude()) && $this->_isSubCallAllowed('aoe_cartapi_item')) {
-            /** @var Aoe_CartApi_Model_Item $subModel */
-            $subModel = $this->_getSubModel('aoe_cartapi_item', []);
-            $data['items'] = $subModel->prepareCollection($resource);
+        // Initialize outbound data array
+        $data = [];
+
+        // Get raw outbound data
+        $attributes = array_diff($filter->getAttributesToInclude(), $this->manualAttributes);
+        $attributes = array_combine($attributes, $attributes);
+        $attributes = array_merge($attributes, array_intersect_key($this->attributeMap, $attributes));
+        foreach ($attributes as $externalKey => $internalKey) {
+            $data[$externalKey] = $resource->getDataUsingMethod($internalKey);
         }
 
-        // Add in billing address
-        if (in_array('billing_address', $filter->getAttributesToInclude()) && $this->_isSubCallAllowed('aoe_cartapi_billing_address')) {
-            /** @var Aoe_CartApi_Model_BillingAddress $subModel */
-            $subModel = $this->_getSubModel('aoe_cartapi_billing_address', []);
-            $data['billing_address'] = $subModel->prepareResource($resource->getBillingAddress());
-        }
+        // =========================
+        // BEGIN - Manual attributes
+        // =========================
 
-        // Add in shipping address
-        if (in_array('shipping_address', $filter->getAttributesToInclude()) && $this->_isSubCallAllowed('aoe_cartapi_shipping_address')) {
-            /** @var Aoe_CartApi_Model_ShippingAddress $subModel */
-            $subModel = $this->_getSubModel('aoe_cartapi_shipping_address', []);
-            $data['shipping_address'] = $subModel->prepareResource($resource->getShippingAddress());
-        }
+        // Shipping method
+        $data['shipping_method'] = $resource->getShippingAddress()->getShippingMethod();
 
-        // Add in payment
-        //TODO
+        // Cart qty summary
+        $data['qty'] = (Mage::getStoreConfig('checkout/cart_link/use_qty') ? $resource->getItemsQty() : $resource->getItemsCount());
 
         // Add in totals
         if (in_array('totals', $filter->getAttributesToInclude())) {
@@ -133,10 +138,9 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
             }
         }
 
-        // Add flag to indicate if the cart has an error or not
-        if (in_array('has_error', $filter->getAttributesToInclude())) {
-            $data['has_error'] = (bool)$resource->getHasError();
-        }
+        // =========================
+        // END - Manual attributes
+        // =========================
 
         // Fire event
         $data = new Varien_Object($data);
@@ -147,23 +151,45 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
         $data = $filter->out($data);
 
         // Handle embeds - This happens after output filtering on purpose
-        $embeds = $this->getRequest()->getQuery('embed');
-        $embeds = array_filter(array_map('trim', (is_array($embeds) ? $embeds : explode(',', $embeds))));
-        foreach ($embeds as $embed) {
+        foreach ($this->parseEmbeds($this->getRequest()->getParam('embed')) as $embed) {
             switch ($embed) {
+                case 'items':
+                    if ($this->_isSubCallAllowed('aoe_cartapi_item')) {
+                        /** @var Aoe_CartApi_Model_Item $subModel */
+                        $subModel = $this->_getSubModel('aoe_cartapi_item', ['embed' => false]);
+                        $data['items'] = $subModel->prepareCollection($resource);
+                    }
+                    break;
+                case 'billing_address':
+                    if ($this->_isSubCallAllowed('aoe_cartapi_billing_address')) {
+                        /** @var Aoe_CartApi_Model_BillingAddress $subModel */
+                        $subModel = $this->_getSubModel('aoe_cartapi_billing_address', []);
+                        $data['billing_address'] = $subModel->prepareResource($resource->getBillingAddress());
+                    }
+                    break;
+                case 'shipping_address':
+                    if ($this->_isSubCallAllowed('aoe_cartapi_shipping_address')) {
+                        /** @var Aoe_CartApi_Model_ShippingAddress $subModel */
+                        $subModel = $this->_getSubModel('aoe_cartapi_shipping_address', []);
+                        $data['shipping_address'] = $subModel->prepareResource($resource->getShippingAddress());
+                    }
+                    break;
                 case 'shipping_methods':
                     if ($this->_isSubCallAllowed('aoe_cartapi_shipping_method')) {
                         /** @var Aoe_CartApi_Model_ShippingMethod $subModel */
-                        $subModel = $this->_getSubModel('aoe_cartapi_shipping_method', []);
+                        $subModel = $this->_getSubModel('aoe_cartapi_shipping_method', ['embed' => false]);
                         $data['shipping_methods'] = $subModel->prepareCollection($resource);
                     }
                     break;
                 case 'crosssells':
                     if ($this->_isSubCallAllowed('aoe_cartapi_crosssell')) {
                         /** @var Aoe_CartApi_Model_Crosssell $subModel */
-                        $subModel = $this->_getSubModel('aoe_cartapi_crosssell', []);
+                        $subModel = $this->_getSubModel('aoe_cartapi_crosssell', ['embed' => false]);
                         $data['crosssells'] = $subModel->prepareCollection($resource);
                     }
+                    break;
+                case 'payment':
+                    // TODO
                     break;
             }
         }

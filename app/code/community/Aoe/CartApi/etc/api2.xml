@@ -31,10 +31,6 @@
                 <attributes translate="" module="Aoe_CartApi">
                     <coupon_code>Coupon Code</coupon_code>
                     <!-- View-only -->
-                    <items>Items</items>
-                    <billing_address>Billing Address</billing_address>
-                    <shipping_address>Shipping Address</shipping_address>
-                    <payment>Payment</payment>
                     <shipping_method>Shipping Method</shipping_method>
                     <qty>Summary Quantity</qty>
                     <totals>Totals</totals>
@@ -44,10 +40,6 @@
                 <exclude_attributes>
                     <guest>
                         <write>
-                            <items>1</items>
-                            <billing_address>1</billing_address>
-                            <shipping_address>1</shipping_address>
-                            <payment>1</payment>
                             <shipping_method>1</shipping_method>
                             <qty>1</qty>
                             <totals>1</totals>
@@ -57,10 +49,6 @@
                     </guest>
                     <customer>
                         <write>
-                            <items>1</items>
-                            <billing_address>1</billing_address>
-                            <shipping_address>1</shipping_address>
-                            <payment>1</payment>
                             <shipping_method>1</shipping_method>
                             <qty>1</qty>
                             <totals>1</totals>
