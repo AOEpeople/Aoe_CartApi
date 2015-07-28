@@ -233,8 +233,16 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
         $this->setActionType(self::ACTION_TYPE_ENTITY);
         $this->setOperation(self::OPERATION_UPDATE);
 
+        // Get a filter instance
+        $filter = $this->getFilter();
+
+        // Fire event - before filter
+        $data = new Varien_Object($data);
+        Mage::dispatchEvent('aoe_cartapi_cart_update_prefilter', ['data' => $data, 'filter' => $filter, 'resource' => $resource]);
+        $data = $data->getData();
+
         // Filter raw incoming data
-        $data = $this->getFilter()->in($data);
+        $data = $filter->in($data);
 
         // Map data keys
         $data = $this->mapAttributes($data);
@@ -248,6 +256,11 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
         if (array_key_exists('shipping_method', $data)) {
             $resource->getShippingAddress()->setShippingMethod($data['shipping_method']);
         }
+
+        // Fire event
+        $data = new Varien_Object($data);
+        Mage::dispatchEvent('aoe_cartapi_cart_update', ['data' => $data, 'filter' => $filter, 'resource' => $resource]);
+        $data = $data->getData();
 
         $failedValidation = false;
 
