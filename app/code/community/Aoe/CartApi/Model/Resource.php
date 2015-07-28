@@ -53,7 +53,21 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
         /** @var Mage_Checkout_Model_Session $session */
         $session = Mage::getSingleton('checkout/session');
 
-        return $session->getQuote();
+        $quote = $session->getQuote();
+
+        // Email sync to be compatible with OPC and XMLconnect
+        if ($quote->hasData('customer_email') && !$quote->getBillingAddress()->hasData('email')) {
+            // Copy quote email to missing billing email
+            $quote->getBillingAddress()->setEmail($quote->getCustomerEmail());
+        } elseif (!$quote->hasData('customer_email') && $quote->getBillingAddress()->hasData('email')) {
+            // Copy billing email to missing quote email
+            $quote->setCustomerEmail($quote->getBillingAddress()->getEmail());
+        } elseif($quote->hasData('customer_email') && $quote->getBillingAddress()->hasData('email') && $quote->getCustomerEmail() !== $quote->getBillingAddress()->getEmail()) {
+            // Sync quote email to match billing email
+            $quote->setCustomerEmail($quote->getBillingAddress()->getEmail());
+        }
+
+        return $quote;
     }
 
     /**
@@ -63,11 +77,29 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
     {
         /** @var Mage_Checkout_Model_Session $session */
         $session = Mage::getSingleton('checkout/session');
+
         $quote = $session->getQuote();
+
         $quote->getBillingAddress();
+
+        // Email sync to be compatible with OPC and XMLconnect
+        if ($quote->hasData('customer_email') && !$quote->getBillingAddress()->hasData('email')) {
+            // Copy quote email to missing billing email
+            $quote->getBillingAddress()->setEmail($quote->getCustomerEmail());
+        } elseif (!$quote->hasData('customer_email') && $quote->getBillingAddress()->hasData('email')) {
+            // Copy billing email to missing quote email
+            $quote->setCustomerEmail($quote->getBillingAddress()->getEmail());
+        } elseif($quote->hasData('customer_email') && $quote->getBillingAddress()->hasData('email') && $quote->getCustomerEmail() !== $quote->getBillingAddress()->getEmail()) {
+            // Sync billing email to match quote email
+            $quote->getBillingAddress()->setEmail($quote->getCustomerEmail());
+        }
+
         $quote->getShippingAddress()->setCollectShippingRates(true);
+
         $quote->collectTotals();
+
         $quote->save();
+
         $session->setQuoteId($quote->getId());
 
         return $quote;
