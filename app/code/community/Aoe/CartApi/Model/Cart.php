@@ -37,19 +37,6 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
     ];
 
     /**
-     * Hash of default embed codes
-     *
-     * @var string[]
-     */
-    protected $defaultEmbeds = [
-        'items',
-        'billing_address',
-        'shipping_address',
-        'payment',
-    ];
-
-
-    /**
      * Dispatch API call
      */
     public function dispatch()
