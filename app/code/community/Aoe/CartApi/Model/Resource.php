@@ -62,7 +62,7 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
         } elseif (!$quote->hasData('customer_email') && $quote->getBillingAddress()->hasData('email')) {
             // Copy billing email to missing quote email
             $quote->setCustomerEmail($quote->getBillingAddress()->getEmail());
-        } elseif($quote->hasData('customer_email') && $quote->getBillingAddress()->hasData('email') && $quote->getCustomerEmail() !== $quote->getBillingAddress()->getEmail()) {
+        } elseif ($quote->hasData('customer_email') && $quote->getBillingAddress()->hasData('email') && $quote->getCustomerEmail() !== $quote->getBillingAddress()->getEmail()) {
             // Sync quote email to match billing email
             $quote->setCustomerEmail($quote->getBillingAddress()->getEmail());
         }
@@ -89,7 +89,7 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
         } elseif (!$quote->hasData('customer_email') && $quote->getBillingAddress()->hasData('email')) {
             // Copy billing email to missing quote email
             $quote->setCustomerEmail($quote->getBillingAddress()->getEmail());
-        } elseif($quote->hasData('customer_email') && $quote->getBillingAddress()->hasData('email') && $quote->getCustomerEmail() !== $quote->getBillingAddress()->getEmail()) {
+        } elseif ($quote->hasData('customer_email') && $quote->getBillingAddress()->hasData('email') && $quote->getCustomerEmail() !== $quote->getBillingAddress()->getEmail()) {
             // Sync billing email to match quote email
             $quote->getBillingAddress()->setEmail($quote->getCustomerEmail());
         }
