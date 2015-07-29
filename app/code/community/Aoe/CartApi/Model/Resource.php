@@ -114,6 +114,48 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
     }
 
     /**
+     * Read in the attributes from a resource
+     *
+     * @param Varien_Object $resource
+     * @param string[]      $attributeCodes
+     * @param mixed[]       $data
+     *
+     * @return mixed[]
+     */
+    protected function loadResourceAttributes(Varien_Object $resource, array $attributeCodes, array $data = [])
+    {
+        $attributeCodes = array_diff($attributeCodes, $this->manualAttributes);
+        $attributeCodes = array_combine($attributeCodes, $attributeCodes);
+        $attributeCodes = array_merge($attributeCodes, array_intersect_key($this->attributeMap, $attributeCodes));
+        foreach ($attributeCodes as $externalKey => $internalKey) {
+            $data[$externalKey] = $resource->getDataUsingMethod($internalKey);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Update a resource
+     *
+     * @param Varien_Object $resource
+     * @param string[]      $attributeCodes
+     * @param mixed[]       $data
+     *
+     * @return $this
+     */
+    protected function saveResourceAttributes(Varien_Object $resource, array $attributeCodes, array $data)
+    {
+        $attributeCodes = array_diff($attributeCodes, $this->manualAttributes);
+        $attributeCodes = array_combine($attributeCodes, $attributeCodes);
+        $attributeCodes = array_merge($attributeCodes, array_intersect_key($this->attributeMap, $attributeCodes));
+        foreach (array_intersect_key($data, $attributeCodes) as $externalKey => $value) {
+            $resource->setDataUsingMethod($attributeCodes[$externalKey], $value);
+        }
+
+        return $this;
+    }
+
+    /**
      * Remap attribute keys
      *
      * @param array $data
