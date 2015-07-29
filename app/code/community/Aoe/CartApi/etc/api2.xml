@@ -176,6 +176,7 @@
                     <telephone>telephone</telephone>
                     <fax>fax</fax>
                     <save_in_address_book>save_in_address_book</save_in_address_book>
+                    <validation_errors>Validation Errors</validation_errors>
                 </attributes>
                 <exclude_attributes>
                     <guest>
@@ -186,8 +187,14 @@
                         <write>
                             <customer_address_id>1</customer_address_id>
                             <save_in_address_book>1</save_in_address_book>
+                            <validation_errors>1</validation_errors>
                         </write>
                     </guest>
+                    <customer>
+                        <write>
+                            <validation_errors>1</validation_errors>
+                        </write>
+                    </customer>
                 </exclude_attributes>
                 <routes>
                     <route_entity>
@@ -233,6 +240,7 @@
                     <telephone>telephone</telephone>
                     <fax>fax</fax>
                     <save_in_address_book>save_in_address_book</save_in_address_book>
+                    <validation_errors>Validation Errors</validation_errors>
                 </attributes>
                 <exclude_attributes>
                     <guest>
@@ -243,8 +251,14 @@
                         <write>
                             <customer_address_id>1</customer_address_id>
                             <save_in_address_book>1</save_in_address_book>
+                            <validation_errors>1</validation_errors>
                         </write>
                     </guest>
+                    <customer>
+                        <write>
+                            <validation_errors>1</validation_errors>
+                        </write>
+                    </customer>
                 </exclude_attributes>
                 <routes>
                     <route_entity>

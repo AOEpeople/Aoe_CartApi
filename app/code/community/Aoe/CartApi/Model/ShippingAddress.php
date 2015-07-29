@@ -23,6 +23,15 @@ class Aoe_CartApi_Model_ShippingAddress extends Aoe_CartApi_Model_Resource
     ];
 
     /**
+     * Array of external attribute codes that are manually generated
+     *
+     * @var string[]
+     */
+    protected $manualAttributes = [
+        'validation_errors'
+    ];
+
+    /**
      * Dispatch API call
      */
     public function dispatch()
@@ -78,6 +87,18 @@ class Aoe_CartApi_Model_ShippingAddress extends Aoe_CartApi_Model_Resource
 
         // Get raw outbound data
         $data = $this->loadResourceAttributes($resource, $filter->getAttributesToInclude());
+
+        // =========================
+        // BEGIN - Manual attributes
+        // =========================
+
+        if (in_array('validation_errors', $filter->getAttributesToInclude())) {
+            $data['validation_errors'] = array_filter(array_map('trim', (array)$resource->getData('validation_errors')));
+        }
+
+        // =========================
+        // END - Manual attributes
+        // =========================
 
         // Fire event
         $data = new Varien_Object($data);
@@ -163,17 +184,13 @@ class Aoe_CartApi_Model_ShippingAddress extends Aoe_CartApi_Model_Resource
 
         // Validate address
         /* @var Mage_Customer_Model_Form $addressForm */
-//        $addressForm = Mage::getModel('customer/form');
-//        $addressForm->setFormCode('customer_address_edit')->setEntityType('customer_address');
-//        $addressForm->setEntity($resource);
-//        $addressErrors = $addressForm->validateData($resource->getData());
-//        if ($addressErrors !== true) {
-//            foreach($addressErrors as $addressError) {
-//                // This is a nasty hack
-//                $this->getResponse()->setException(new Mage_Api2_Exception($addressError, Mage_Api2_Model_Server::HTTP_BAD_REQUEST));
-//            }
-//            $this->_critical('Failed Address Validation', Mage_Api2_Model_Server::HTTP_BAD_REQUEST);
-//        }
+        $addressForm = Mage::getModel('customer/form');
+        $addressForm->setFormCode('customer_address_edit')->setEntityType('customer_address');
+        $addressForm->setEntity($resource);
+        $addressErrors = $addressForm->validateData($resource->getData());
+        if ($addressErrors !== true) {
+            $resource->setData('validation_errors', $addressErrors);
+        }
 
         // Restore old state
         $this->setActionType($actionType);
