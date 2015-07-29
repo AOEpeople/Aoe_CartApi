@@ -96,10 +96,14 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
         // =========================
 
         // Shipping method
-        $data['shipping_method'] = $resource->getShippingAddress()->getShippingMethod();
+        if (in_array('shipping_method', $filter->getAttributesToInclude())) {
+            $data['shipping_method'] = $resource->getShippingAddress()->getShippingMethod();
+        }
 
         // Cart qty summary
-        $data['qty'] = (Mage::getStoreConfig('checkout/cart_link/use_qty') ? $resource->getItemsQty() : $resource->getItemsCount());
+        if (in_array('qty', $filter->getAttributesToInclude())) {
+            $data['qty'] = (Mage::getStoreConfig('checkout/cart_link/use_qty') ? $resource->getItemsQty() : $resource->getItemsCount());
+        }
 
         // Add in totals
         if (in_array('totals', $filter->getAttributesToInclude())) {
