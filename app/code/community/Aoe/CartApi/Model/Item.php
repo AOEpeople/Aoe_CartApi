@@ -27,6 +27,19 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
     ];
 
     /**
+     * Array of external attribute codes that are manually generated
+     *
+     * @var string[]
+     */
+    protected $manualAttributes = [
+        'original_price',
+        'images',
+        'children',
+        'messages',
+        'is_saleable',
+    ];
+
+    /**
      * Dispatch API call
      */
     public function dispatch()
@@ -146,31 +159,24 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
     protected function prepareItem(Mage_Sales_Model_Quote_Item $item, Mage_Api2_Model_Acl_Filter $filter)
     {
         // Get raw outbound data
-        $data = [];
-        $exclude = ['original_price', 'images', 'children', 'messages', 'is_saleable'];
-        $attributes = $filter->getAttributesToInclude();
-        $attributes = array_diff($attributes, $exclude);
-        $attributes = array_combine($attributes, $attributes);
-        $attributes = $this->mapAttributes($attributes);
-        foreach ($attributes as $key => $attribute) {
-            $data[$attribute] = $item->getDataUsingMethod($key);
-        }
+        $data = $this->loadResourceAttributes($item, $filter->getAttributesToInclude());
 
-        // Map data keys
-        $data = $this->unmapAttributes($data);
+        // =========================
+        // BEGIN - Manual attributes
+        // =========================
 
-        // Add original price
+        // original_price
         if (in_array('original_price', $filter->getAttributesToInclude())) {
             $product = $item->getProduct();
             $data['original_price'] = $product->getPriceModel()->getPrice($product);
         }
 
-        // Add image URLs
+        // image URLs
         if (in_array('images', $filter->getAttributesToInclude())) {
             $data['images'] = $this->getImageUrls($item->getProduct());
         }
 
-        // Add child items
+        // child items
         if (!$item->getParentItemId() && in_array('children', $filter->getAttributesToInclude())) {
             $data['children'] = [];
             foreach ($item->getQuote()->getItemsCollection() as $quoteItem) {
@@ -184,15 +190,19 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
             }
         }
 
-        // Add messages
+        // messages
         if (in_array('messages', $filter->getAttributesToInclude())) {
             $data['messages'] = $item->getMessage(false);
         }
 
-        // Add is_saleable flag
+        // is_saleable flag
         if (in_array('is_saleable', $filter->getAttributesToInclude())) {
             $data['is_saleable'] = (bool)$item->getProduct()->getIsSalable();
         }
+
+        // =========================
+        // END - Manual attributes
+        // =========================
 
         // Fire event
         $data = new Varien_Object($data);
@@ -333,16 +343,24 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
         $this->setActionType(self::ACTION_TYPE_ENTITY);
         $this->setOperation(self::OPERATION_UPDATE);
 
-        // Filter raw incoming data
-        $data = $this->getFilter()->in($data);
+        // Get a filter instance
+        $filter = $this->getFilter();
 
-        // Map data keys
-        $data = $this->mapAttributes($data);
+        // Fire event - before filter
+        $data = new Varien_Object($data);
+        Mage::dispatchEvent('aoe_cartapi_item_update_prefilter', ['data' => $data, 'filter' => $filter, 'resource' => $resource]);
+        $data = $data->getData();
+
+        // Get allowed attributes
+        $allowedAttributes = $filter->getAllowedAttributes(Mage_Api2_Model_Resource::OPERATION_ATTRIBUTE_WRITE);
 
         // Update model
-        foreach ($data as $key => $value) {
-            $resource->setDataUsingMethod($key, $value);
-        }
+        $this->saveResourceAttributes($resource, $allowedAttributes, $data);
+
+        // Fire event
+        $data = new Varien_Object($data);
+        Mage::dispatchEvent('aoe_cartapi_item_update', ['data' => $data, 'filter' => $filter, 'resource' => $resource]);
+        //$data = $data->getData();
 
         // Restore old state
         $this->setActionType($actionType);
