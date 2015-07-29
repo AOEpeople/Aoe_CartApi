@@ -44,9 +44,11 @@ class Aoe_CartApi_Model_ShippingAddress extends Aoe_CartApi_Model_Resource
                 $this->_render($this->prepareResource($resource));
                 break;
             case self::ACTION_TYPE_ENTITY . self::OPERATION_DELETE:
+                // Grab shipping method code
                 $shippingMethod = $resource->getShippingMethod();
                 $resource->delete()->isDeleted(true);
                 if ($shippingMethod) {
+                    // Set shipping method code if it was originally set
                     $this->loadQuote()->getShippingAddress()->setShippingMethod($shippingMethod)->save();
                 }
                 $this->getResponse()->setMimeType($this->getRenderer()->getMimeType());

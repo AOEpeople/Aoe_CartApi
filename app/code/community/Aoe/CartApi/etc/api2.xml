@@ -233,7 +233,6 @@
                     <telephone>telephone</telephone>
                     <fax>fax</fax>
                     <save_in_address_book>save_in_address_book</save_in_address_book>
-                    <method>Shipping Method</method>
                 </attributes>
                 <exclude_attributes>
                     <guest>
