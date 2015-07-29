@@ -252,6 +252,7 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
         $data = $data->getData();
 
         // Filter raw incoming data
+        $unfilteredData = $data;
         $data = $filter->in($data);
 
         // Map data keys
@@ -265,6 +266,29 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
         // Synthetic attributes
         if (array_key_exists('shipping_method', $data)) {
             $resource->getShippingAddress()->setShippingMethod($data['shipping_method']);
+        }
+
+        // Handle embeds - This is a subset of possible embeds
+        foreach ($this->parseEmbeds($this->getRequest()->getParam('embed')) as $embed) {
+            switch ($embed) {
+                case 'billing_address':
+                    if (array_key_exists('billing_address', $unfilteredData) && $this->_isSubCallAllowed('aoe_cartapi_billing_address')) {
+                        /** @var Aoe_CartApi_Model_BillingAddress $subModel */
+                        $subModel = $this->_getSubModel('aoe_cartapi_billing_address', []);
+                        $subModel->updateResource($resource->getBillingAddress(), $unfilteredData['billing_address']);
+                    }
+                    break;
+                case 'shipping_address':
+                    if (array_key_exists('shipping_address', $unfilteredData) && $this->_isSubCallAllowed('aoe_cartapi_shipping_address')) {
+                        /** @var Aoe_CartApi_Model_ShippingAddress $subModel */
+                        $subModel = $this->_getSubModel('aoe_cartapi_shipping_address', []);
+                        $subModel->updateResource($resource->getShippingAddress(), $unfilteredData['shipping_address']);
+                    }
+                    break;
+                case 'payment':
+                    // TODO
+                    break;
+            }
         }
 
         // Fire event
