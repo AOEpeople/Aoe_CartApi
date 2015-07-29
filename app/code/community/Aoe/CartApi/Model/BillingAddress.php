@@ -105,7 +105,7 @@ class Aoe_CartApi_Model_BillingAddress extends Aoe_CartApi_Model_Resource
      * @param Mage_Sales_Model_Quote_Address $resource
      * @param array                          $data
      *
-     * @return Mage_Sales_Model_Quote_Item
+     * @return Mage_Sales_Model_Quote_Address
      */
     public function updateResource(Mage_Sales_Model_Quote_Address $resource, array $data)
     {
