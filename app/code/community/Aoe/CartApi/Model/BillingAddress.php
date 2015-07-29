@@ -25,7 +25,7 @@ class Aoe_CartApi_Model_BillingAddress extends Aoe_CartApi_Model_Resource
      * @var string[]
      */
     protected $manualAttributes = [
-        'validation_errors'
+        'validation_errors',
     ];
 
     /**
@@ -164,6 +164,13 @@ class Aoe_CartApi_Model_BillingAddress extends Aoe_CartApi_Model_Resource
 
             // Update model
             $this->saveResourceAttributes($resource, $allowedAttributes, $data);
+        }
+
+        // Update the shipping address if it is meant to match the billing address
+        if ($resource->getQuote()->getShippingAddress()->getSameAsBilling()) {
+            $shippingAddress = $resource->getQuote()->getShippingAddress();
+            $shippingAddress->importCustomerAddress($resource->exportCustomerAddress());
+            $shippingAddress->setSameAsBilling(1);
         }
 
         // Validate address
