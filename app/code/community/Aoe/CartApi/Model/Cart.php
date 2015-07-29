@@ -88,16 +88,8 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
         // Get a filter instance
         $filter = $this->getFilter();
 
-        // Initialize outbound data array
-        $data = [];
-
         // Get raw outbound data
-        $attributes = array_diff($filter->getAttributesToInclude(), $this->manualAttributes);
-        $attributes = array_combine($attributes, $attributes);
-        $attributes = array_merge($attributes, array_intersect_key($this->attributeMap, $attributes));
-        foreach ($attributes as $externalKey => $internalKey) {
-            $data[$externalKey] = $resource->getDataUsingMethod($internalKey);
-        }
+        $data = $this->loadResourceAttributes($resource, $filter->getAttributesToInclude());
 
         // =========================
         // BEGIN - Manual attributes
@@ -238,38 +230,40 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
         Mage::dispatchEvent('aoe_cartapi_cart_update_prefilter', ['data' => $data, 'filter' => $filter, 'resource' => $resource]);
         $data = $data->getData();
 
-        // Filter raw incoming data
-        $unfilteredData = $data;
-        $data = $filter->in($data);
-
-        // Map data keys
-        $data = $this->mapAttributes($data);
+        // Get allowed attributes
+        $allowedAttributes = $filter->getAllowedAttributes(Mage_Api2_Model_Resource::OPERATION_ATTRIBUTE_WRITE);
 
         // Update model
-        foreach ($data as $key => $value) {
-            $resource->setDataUsingMethod($key, $value);
-        }
+        $this->saveResourceAttributes($resource, $allowedAttributes, $data);
 
-        // Synthetic attributes
-        if (array_key_exists('shipping_method', $data)) {
+        // =========================
+        // BEGIN - Manual attributes
+        // =========================
+
+        // Shipping Method
+        if (in_array('shipping_method', $allowedAttributes) && array_key_exists('shipping_method', $data)) {
             $resource->getShippingAddress()->setShippingMethod($data['shipping_method']);
         }
+
+        // =========================
+        // END - Manual attributes
+        // =========================
 
         // Handle embeds - This is a subset of possible embeds
         foreach ($this->parseEmbeds($this->getRequest()->getParam('embed')) as $embed) {
             switch ($embed) {
                 case 'billing_address':
-                    if (array_key_exists('billing_address', $unfilteredData) && $this->_isSubCallAllowed('aoe_cartapi_billing_address')) {
+                    if (array_key_exists('billing_address', $data) && $this->_isSubCallAllowed('aoe_cartapi_billing_address')) {
                         /** @var Aoe_CartApi_Model_BillingAddress $subModel */
                         $subModel = $this->_getSubModel('aoe_cartapi_billing_address', []);
-                        $subModel->updateResource($resource->getBillingAddress(), $unfilteredData['billing_address']);
+                        $subModel->updateResource($resource->getBillingAddress(), $data['billing_address']);
                     }
                     break;
                 case 'shipping_address':
-                    if (array_key_exists('shipping_address', $unfilteredData) && $this->_isSubCallAllowed('aoe_cartapi_shipping_address')) {
+                    if (array_key_exists('shipping_address', $data) && $this->_isSubCallAllowed('aoe_cartapi_shipping_address')) {
                         /** @var Aoe_CartApi_Model_ShippingAddress $subModel */
                         $subModel = $this->_getSubModel('aoe_cartapi_shipping_address', []);
-                        $subModel->updateResource($resource->getShippingAddress(), $unfilteredData['shipping_address']);
+                        $subModel->updateResource($resource->getShippingAddress(), $data['shipping_address']);
                     }
                     break;
                 case 'payment':
