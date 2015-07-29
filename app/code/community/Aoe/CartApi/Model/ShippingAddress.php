@@ -73,15 +73,15 @@ class Aoe_CartApi_Model_ShippingAddress extends Aoe_CartApi_Model_Resource
         $this->setActionType(self::ACTION_TYPE_ENTITY);
         $this->setOperation(self::OPERATION_RETRIEVE);
 
-        // Get raw outbound data
-        $data = $resource->toArray();
+        // Get a filter instance
+        $filter = $this->getFilter();
 
-        // Map data keys
-        $data = $this->unmapAttributes($data);
+        // Get raw outbound data
+        $data = $this->loadResourceAttributes($resource, $filter->getAttributesToInclude());
 
         // Fire event
         $data = new Varien_Object($data);
-        Mage::dispatchEvent('aoe_cartapi_shippingaddress_prepare', ['data' => $data, 'filter' => $this->getFilter(), 'resource' => $resource]);
+        Mage::dispatchEvent('aoe_cartapi_shippingaddress_prepare', ['data' => $data, 'filter' => $filter, 'resource' => $resource]);
         $data = $data->getData();
 
         // Filter outbound data
@@ -91,7 +91,7 @@ class Aoe_CartApi_Model_ShippingAddress extends Aoe_CartApi_Model_Resource
         $data = $this->fixTypes($data);
 
         // Add null values for missing data
-        foreach ($this->getFilter()->getAttributesToInclude() as $code) {
+        foreach ($filter->getAttributesToInclude() as $code) {
             if (!array_key_exists($code, $data)) {
                 $data[$code] = null;
             }
@@ -126,11 +126,11 @@ class Aoe_CartApi_Model_ShippingAddress extends Aoe_CartApi_Model_Resource
         $this->setActionType(self::ACTION_TYPE_ENTITY);
         $this->setOperation(self::OPERATION_UPDATE);
 
-        // Filter raw incoming data
-        $data = $this->getFilter()->in($data);
+        // Get a filter instance
+        $filter = $this->getFilter();
 
-        // Map data keys
-        $data = $this->mapAttributes($data);
+        // Filter raw incoming data
+        $data = $filter->in($data);
 
         // Check if the update is setting a customer address ID to use
         if (array_key_exists('customer_address_id', $data)) {
@@ -151,11 +151,14 @@ class Aoe_CartApi_Model_ShippingAddress extends Aoe_CartApi_Model_Resource
             // Clear flag
             $data['same_as_billing'] = 0;
 
-            // Update model
+            // Fix region/country data
             $data = $this->getHelper()->fixAddressData($data, $resource->getCountryId(), $resource->getRegionId());
-            foreach ($data as $key => $value) {
-                $resource->setDataUsingMethod($key, $value);
-            }
+
+            // Get allowed attributes
+            $allowedAttributes = $filter->getAllowedAttributes(Mage_Api2_Model_Resource::OPERATION_ATTRIBUTE_WRITE);
+
+            // Update model
+            $this->saveResourceAttributes($resource, $allowedAttributes, $data);
         }
 
         // Validate address
