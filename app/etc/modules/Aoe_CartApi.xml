@@ -11,6 +11,7 @@
                 <Mage_Checkout/>
                 <Mage_Customer/>
                 <Mage_Catalog/>
+                <Mage_Directory/>
             </depends>
         </Aoe_CartApi>
     </modules>

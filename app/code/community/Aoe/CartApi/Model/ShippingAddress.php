@@ -150,6 +150,7 @@ class Aoe_CartApi_Model_ShippingAddress extends Aoe_CartApi_Model_Resource
             $data['same_as_billing'] = 0;
 
             // Update model
+            $data = $this->getHelper()->fixAddressData($data, $resource->getCountryId(), $resource->getRegionId());
             foreach ($data as $key => $value) {
                 $resource->setDataUsingMethod($key, $value);
             }

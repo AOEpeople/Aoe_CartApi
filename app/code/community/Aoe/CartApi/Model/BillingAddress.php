@@ -136,6 +136,7 @@ class Aoe_CartApi_Model_BillingAddress extends Aoe_CartApi_Model_Resource
             }
         } else {
             // Update model
+            $data = $this->getHelper()->fixAddressData($data, $resource->getCountryId(), $resource->getRegionId());
             foreach ($data as $key => $value) {
                 $resource->setDataUsingMethod($key, $value);
             }
