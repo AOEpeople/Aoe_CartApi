@@ -150,6 +150,9 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
     {
         // This makes me a bit nervous
         $currencyCode = $this->loadQuote()->getQuoteCurrencyCode();
+        if (empty($currencyCode)) {
+            $currencyCode = $this->loadQuote()->getStore()->getDefaultCurrencyCode();
+        }
 
         if (empty($typeMap)) {
             $typeMap = $this->attributeTypeMap;
