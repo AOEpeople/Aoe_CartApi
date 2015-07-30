@@ -30,11 +30,6 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
      */
     protected $defaultEmbeds = [];
 
-    /**
-     * @var Mage_Sales_Model_Quote
-     */
-    protected $quote;
-
     public function dispatch()
     {
         $this->_critical(self::RESOURCE_METHOD_NOT_ALLOWED);
@@ -53,33 +48,9 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
     /**
      * @return Mage_Sales_Model_Quote
      */
-    protected function loadQuote($forceReload = false)
+    protected function loadQuote()
     {
-        if (!$this->quote || $forceReload) {
-            /** @var Mage_Checkout_Model_Session $session */
-            $session = Mage::getSingleton('checkout/session');
-            $quote = $session->getQuote();
-
-            Mage::dispatchEvent('aoe_cartapi_load_quote_before', ['quote' => $quote]);
-
-            // Email sync to be compatible with OPC and XMLconnect
-            if ($quote->hasData('customer_email') && !$quote->getBillingAddress()->hasData('email')) {
-                // Copy quote email to missing billing email
-                $quote->getBillingAddress()->setEmail($quote->getCustomerEmail());
-            } elseif (!$quote->hasData('customer_email') && $quote->getBillingAddress()->hasData('email')) {
-                // Copy billing email to missing quote email
-                $quote->setCustomerEmail($quote->getBillingAddress()->getEmail());
-            } elseif ($quote->hasData('customer_email') && $quote->getBillingAddress()->hasData('email') && $quote->getCustomerEmail() !== $quote->getBillingAddress()->getEmail()) {
-                // Sync quote email to match billing email
-                $quote->setCustomerEmail($quote->getBillingAddress()->getEmail());
-            }
-
-            Mage::dispatchEvent('aoe_cartapi_load_quote_after', ['quote' => $quote]);
-
-            $this->quote = $quote;
-        }
-
-        return $this->quote;
+        return $this->getHelper()->loadQuote();
     }
 
     /**
@@ -87,37 +58,7 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
      */
     protected function saveQuote()
     {
-        $quote = $this->loadQuote();
-
-        Mage::dispatchEvent('aoe_cartapi_save_quote_before', ['quote' => $quote]);
-
-        $quote->getBillingAddress();
-
-        // Email sync to be compatible with OPC and XMLconnect
-        if ($quote->hasData('customer_email') && !$quote->getBillingAddress()->hasData('email')) {
-            // Copy quote email to missing billing email
-            $quote->getBillingAddress()->setEmail($quote->getCustomerEmail());
-        } elseif (!$quote->hasData('customer_email') && $quote->getBillingAddress()->hasData('email')) {
-            // Copy billing email to missing quote email
-            $quote->setCustomerEmail($quote->getBillingAddress()->getEmail());
-        } elseif ($quote->hasData('customer_email') && $quote->getBillingAddress()->hasData('email') && $quote->getCustomerEmail() !== $quote->getBillingAddress()->getEmail()) {
-            // Sync billing email to match quote email
-            $quote->getBillingAddress()->setEmail($quote->getCustomerEmail());
-        }
-
-        $quote->getShippingAddress()->setCollectShippingRates(true);
-
-        $quote->collectTotals();
-
-        $quote->save();
-
-        /** @var Mage_Checkout_Model_Session $session */
-        $session = Mage::getSingleton('checkout/session');
-        $session->setQuoteId($quote->getId());
-
-        Mage::dispatchEvent('aoe_cartapi_save_quote_after', ['quote' => $quote]);
-
-        return $quote;
+        return $this->getHelper()->saveQuote();
     }
 
     /**
