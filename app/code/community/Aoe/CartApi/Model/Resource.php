@@ -67,6 +67,8 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
             $quote->setCustomerEmail($quote->getBillingAddress()->getEmail());
         }
 
+        Mage::dispatchEvent('aoe_cartapi_load_quote', ['quote' => $quote]);
+
         return $quote;
     }
 
@@ -79,6 +81,8 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
         $session = Mage::getSingleton('checkout/session');
 
         $quote = $session->getQuote();
+
+        Mage::dispatchEvent('aoe_cartapi_save_quote_before', ['quote' => $quote]);
 
         $quote->getBillingAddress();
 
@@ -101,6 +105,8 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
         $quote->save();
 
         $session->setQuoteId($quote->getId());
+
+        Mage::dispatchEvent('aoe_cartapi_save_quote_after', ['quote' => $quote]);
 
         return $quote;
     }
