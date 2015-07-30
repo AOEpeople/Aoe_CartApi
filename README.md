@@ -2,23 +2,122 @@
 
 # Aoe_CartApi Magento Module [![Build Status](https://travis-ci.org/AOEpeople/Aoe_CartApi.svg?branch=master)](https://travis-ci.org/AOEpeople/Aoe_CartApi)
 
-NOTE: This module is NOT ready for public consuption. Once it is ready we will tag a 1.0.0 version.
+**NOTE**: This module is NOT ready for public consuption. Once it is ready we will tag a 1.0.0 version.
 
-NOTE: Following "documentation" is just a dump of some notes while planning this API.
+**NOTE**: Following "documentation" is just a dump of some notes while planning this API.
 
-## Cart
+## Primary cart API endpoints
 
 ### GET /api/rest/cart
-Return the current users cart with all subentities
-```
-{
-    qty: 5,
-    items: {
+Return the cart (quote) for the current frontend Magento session
+
+    {
+        "email": "fake@example.com",
+        "coupon_code": "",
+        "shipping_method": "flatrate_flatrate",
+        "qty": 5,
+        "totals": {
+            "subtotal": {
+                "title": "Subtotal",
+                "formatted": "$0.00",
+                "amount": 0,
+                "currency": "USD"
+            },
+            "shipping": {
+                "title": "Shipping",
+                "formatted": "$0.00",
+                "amount": 0,
+                "currency": "USD"
+            },
+            "discount": {
+                "title": "Discount"
+                "formatted": "$0.00",
+                "amount": 0,
+                "currency": "USD"
+            },
+            "tax": {
+                "title": "Tax",
+                "formatted": "$0.00",
+                "amount": 0,
+                "currency": "USD"
+            },
+            "grand_total": {
+                "title": "Grand Total",
+                "formatted": "$0.00",
+                "amount": 0,
+                "currency": "USD"
+            }
+        },
+        "messages": {
+            "error": [
+                "error message #1",
+                "error message #2"
+            ]
+            "notice": [
+                "notice message #1",
+                "notice message #2"
+            ]
+            "success": [
+                "success message #1",
+                "success message #2"
+            ]
+        },
+        "has_error": false
+    }
+
+Supported query parameters
+
+* attrs
+    * comma separated list of resource attributes you want returned 
+        * email
+        * coupon_code
+        * shipping_method
+        * qty
+        * totals
+        * messages
+        * has_error
+* embed
+    * comma separated list of sub-resources to embed
+        * items
+        * billing_address
+        * shipping_address
+        * shipping_methods
+
+### POST /api/rest/cart
+Update attributes of the cart resource. Using the 'embed' query parameter will allow updating of a limited subset of sub-resources as well.
+
+    {
+        "coupon_code": "FREESTUFF"
+    }
+    
+Supported query parameters
+
+* embed
+    * comma separated list of sub-resources to embed (R) and possibly update (W)
+        * items (R)
+        * billing_address (R/W)
+        * shipping_address (R/W)
+        * shipping_methods
+
+### DELETE /api/rest/cart
+Reset the cart and all sub-resources
+
+### GET /api/rest/cart/items
+Get collection of cart items. This will always return a JS object as result, even if the collection is empty.
+
+    {
         "139303": {
             "item_id": 139303,
             "sku": "ABC123",
             "name": "Thing #1",
+            "images": {
+                "normal": "<url>",
+                "small": "<url>",
+                "thumbnail": "<url>",
+            },
+            "children": []
             "qty": 5,
+            "backorder_qty": 5,
             "original_price": {
                 "formatted": "$0.00",
                 "amount": 0,
@@ -34,156 +133,55 @@ Return the current users cart with all subentities
                 "amount": 0,
                 "currency": "USD"
             },
-            "images": {
-                "thumbnail": "<url>",
-                "small": "<url>",
-                "normal": "<url>"
-            },
-            "backorder_qty": 0,
-            "messages": [
-                "message",
-                "message"
-            ]
+            "error_info": {},
+            "is_saleable": true
         }
-    },
-    billing_address: {
-        "customer_address_id": null,
-        "prefix": null,
-        "firstname": null,
-        "lastname": null,
-        "middlename": null
-        "suffix": null,
-        "company": null,
-        "street": null,
-        "city": null,
-        "region": null,
-        "postcode": null,
-        "country_id": null,
-        "telephone": null,
-        "fax": null,
-        "save_in_address_book": false,
-    },
-    shipping_address: {
-        "customer_address_id": null,
-        "prefix": null,
-        "firstname": null,
-        "middlename": null,
-        "lastname": null,
-        "suffix": null,
-        "company": null,
-        "street": null,
-        "city": null,
-        "region": null,
-        "postcode": null,
-        "country_id": null,
-        "telephone": null,
-        "fax": null,
-        "same_as_billing": true,
-        "save_in_address_book": false
-        "method": "flatrate_flatrate"
-    },
-    payment: {},
-    shipping_method: "flatrate_flatrate",
-    coupon_code: "",
-    totals: {
-        "subtotal": {
-            "title": "Subtotal",
-            "formatted": "$0.00",
-            "amount": 0,
-            "currency": "USD"
-        },
-        "shipping": {
-            "title": "Shipping",
-            "formatted": "$0.00",
-            "amount": 0,
-            "currency": "USD"
-        },
-        "discount": {
-            "title": "Discount"
-            "formatted": "$0.00",
-            "amount": 0,
-            "currency": "USD"
-        },
-        "tax": {
-            "title": "Tax",
-            "formatted": "$0.00",
-            "amount": 0,
-            "currency": "USD"
-        },
-        "grand_total": {
-            "title": "Grand Total",
-            "formatted": "$0.00",
-            "amount": 0,
-            "currency": "USD"
-        }
-    },
-    "messages": {
-        "type (e.g. error, notice, success)": [
-            "message",
-            "message"
-        ]
     }
-}
-```
 
-### POST /api/rest/cart
-- modify direct attributes of the cart
-- coupon
-```
-{
-	"coupon": "FREESTUFF"
-}
-```
+Supported query parameters
 
-## Other data
+* attrs
+    * comma separated list of resource attributes you want returned 
+        * item_id
+        * sku
+        * name
+        * images
+        * children
+        * qty
+        * backorder_qty
+        * original_price
+        * price
+        * row_total
+        * messages
+        * error_info
+        * is_saleable
 
-### GET /api/rest/cart/addresses
-- returns addresses associated with current user
-```
-[{
-	id: ...
-	is_default_shipping: true;
-	name:	
-}, {
-}]
-```
+### POST /api/rest/cart/items
+Add an product to the cart. This will re-use existing items in the cart if possible. The qty attribute is optional and will default to a single unit.
 
-### GET /api/rest/cart/shipping_methods
-get collection of available shipping methods
+    {
+        "sku": "ABC123"
+        "qty": 1
+    }
 
-### GET /api/rest/cart/payment_methods
-get collection of available payment methods
+### DELETE /api/rest/cart/items
+Remove all items from the cart
 
+### GET /api/rest/cart/items/:item_id
+Get a specific cart item
 
-## Payment
-
-### GET /api/rest/cart/payment
-Return the current selected payment (if any)
-
-### POST /api/rest/cart/payment
-Updating payment method:
-```
-{
-	"method": "paypal"
-	"data": {
-		"token": "ssjklsfjlksjf",
-		
-	}
-}
-```
-
-
-## Cart items
-
-### GET /api/rest/cart/items
-get collection of cart items
-```
-{
-    "139303": {
+    {
         "item_id": 139303,
         "sku": "ABC123",
         "name": "Thing #1",
+        "images": {
+            "normal": "<url>",
+            "small": "<url>",
+            "thumbnail": "<url>",
+        },
+        "children": []
         "qty": 5,
+        "backorder_qty": 5,
         "original_price": {
             "formatted": "$0.00",
             "amount": 0,
@@ -199,85 +197,179 @@ get collection of cart items
             "amount": 0,
             "currency": "USD"
         },
-        "images": {
-            "thumbnail": "<url>",
-            "small": "<url>",
-            "normal": "<url>"
-        }
+        "error_info": {},
+        "is_saleable": true
     }
-}
-```
-### POST /api/rest/cart/items (will try to re-use and existing item if possible, qty is optional)
-create new cart item
-```
-{
-	"sku": "ABC123"
-	"qty": 1
-}
-```
 
-### GET /api/rest/cart/items/:item_id
-get single item
-```
-{
-    "item_id": 139303,
-    "sku": "ABC123",
-    "name": "Thing #1",
-    "qty": 5,
-    "original_price": {
-        "formatted": "$0.00",
-        "amount": 0,
-        "currency": "USD"
-    },
-    "price": {
-        "formatted": "$0.00",
-        "amount": 0,
-        "currency": "USD"
-    },
-    "row_total": {
-        "formatted": "$0.00",
-        "amount": 0,
-        "currency": "USD"
-    },
-    "images": {
-        "thumbnail": "<url>",
-        "small": "<url>",
-        "normal": "<url>"
+Supported query parameters
+
+* attrs
+    * comma separated list of resource attributes you want returned 
+        * item_id
+        * sku
+        * name
+        * images
+        * children
+        * qty
+        * backorder_qty
+        * original_price
+        * price
+        * row_total
+        * messages
+        * error_info
+        * is_saleable
+
+### PUT/POST /api/rest/cart/items/:item_id
+Update the quantity for an item in the cart
+    
+    {
+        "qty": 4
     }
-}
-```
-
-### POST /api/rest/cart/items/:item_id (implictly delete with qty=0)
-remove/update item
-```
-{
-	"qty": 4
-}
-```
-```
-{
-	"qty": 0
-}
-```
 
 ### DELETE /api/rest/cart/items/:item_id
-remove item
+Remove an item from the cart
 
+### GET /api/rest/cart/billing_address
+Return the billing address linked to the cart
+    {
+        "firstname": "John",
+        "middlename": "Quincy",
+        "lastname": "Public",
+        "prefix": "Mr.",
+        "suffix": "Jr.",
+        "company": "Acme Inc.",
+        "street":[
+            "Street 1",
+            "Street 2"
+        ],
+        "city": "Burlingame",
+        "region": "California",
+        "postcode": "00000",
+        "country_id": "US",
+        "telephone": "000-000-0000",
+        "validation_errors":[
+            "Error Text",
+            "Error Text"
+        ]
+    }
 
-## Other sub-resources
+Supported query parameters
 
-### POST /api/rest/cart/billing_address
-Add/update billing address
+* attrs
+    * comma separated list of resource attributes you want returned 
+        * firstname
+        * middlename
+        * lastname
+        * prefix
+        * suffix
+        * company
+        * street
+        * city
+        * region
+        * postcode
+        * country_id
+        * telephone
+        * validation_errors - This will **only** be populated in response to a PUT/POST
 
-### POST /api/rest/cart/shipping_address
-Add/update shipping address
+### PUT/POST /api/rest/cart/billing_address
+Update the billing address. All attributes are optional.
 
-## ACTIONS 
+Regions are a bit of 'magic'. You can send the Mage_Directory DB ID, The region 'code', or the region 'name'. The code and name are looked up in relation to the currently selected country.
 
-### POST /api/rest/cart/place
-place order
+    {
+        "region": "FL"
+    }
+
+### DELETE /api/rest/cart/billing_address
+Reset the billing address
+
+### PUT/POST /api/rest/cart/shipping_address
+Update the shipping address All attributes are optional.
+
+Regions are a bit of 'magic'. You can send the Mage_Directory DB ID, The region 'code', or the region 'name'. The code and name are looked up in relation to the currently selected country.
+
+    {
+        "region": "FL"
+    }
+
+### DELETE /api/rest/cart/shipping_address
+Reset the shipping address
+
+    {
+        "firstname": "John",
+        "middlename": "Quincy",
+        "lastname": "Public",
+        "prefix": "Mr.",
+        "suffix": "Jr.",
+        "company": "Acme Inc.",
+        "street":[
+            "Street 1",
+            "Street 2"
+        ],
+        "city": "Burlingame",
+        "region": "California",
+        "postcode": "00000",
+        "country_id": "US",
+        "telephone": "000-000-0000",
+        "validation_errors":[
+            "Error Text",
+            "Error Text"
+        ]
+    }
+
+Supported query parameters
+
+* attrs
+    * comma separated list of resource attributes you want returned 
+        * firstname
+        * middlename
+        * lastname
+        * prefix
+        * suffix
+        * company
+        * street
+        * city
+        * region
+        * postcode
+        * country_id
+        * telephone
+        * validation_errors - This will **only** be populated in response to a PUT/POST
+
+## Additional cart related resources
+
+### GET /api/rest/cart/shipping_methods
+Return a collection of available shipping methods. 
+**NOTE**: This collection changes as the cart data changes.
+
+    [
+        {
+            "code": "flaterate_flaterate"
+            "carrier": "flaterate"
+            "carrier_title": "Flat Rate"
+            "method": "flaterate"
+            "method_title": "Flat Rate"
+            "description": "Flat rate shipping"
+            "price": {
+                "formatted": "$0.00"
+                "currency": "USD",
+                "amount": 0,
+            }
+        }
+    ]
+
+Supported query parameters
+
+* attrs
+    * comma separated list of resource attributes you want returned 
+        * code
+        * carrier
+        * carrier_title
+        * method
+        * method_title
+        * description
+        * price
 
 ## NOTES
 * This module is currently being written for PHP 5.4+ and Magento CE 1.8+ support only.
-* Once PHP 5.4 hits EOL, the minimum requirements will be updated to reflect this.
-* Once/if Magento CE 1.10 is released then support for Magento CE 1.8 will be dropped.
+* When PHP 5.4 hits EOL, the minimum requirements will be updated to reflect this.
+* If/when Magento CE 1.10 is released then support for Magento CE 1.8 will be dropped.
