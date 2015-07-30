@@ -354,6 +354,9 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
         // Get allowed attributes
         $allowedAttributes = $filter->getAllowedAttributes(Mage_Api2_Model_Resource::OPERATION_ATTRIBUTE_WRITE);
 
+        // Manually prevent SKU for updates
+        $allowedAttributes = array_diff($allowedAttributes, ['sku']);
+
         // Update model
         $this->saveResourceAttributes($resource, $allowedAttributes, $data);
 
