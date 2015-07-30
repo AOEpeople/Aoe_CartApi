@@ -63,6 +63,15 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
                 }
                 $this->_render($this->prepareResource($item));
                 break;
+            case self::ACTION_TYPE_COLLECTION . self::OPERATION_DELETE:
+                foreach ($quote->getAllVisibleItems() as $item) {
+                    /** @var Mage_Sales_Model_Quote_Item $item */
+                    $quote->deleteItem($item);
+                    $item->delete();
+                }
+                $this->saveQuote();
+                $this->getResponse()->setMimeType($this->getRenderer()->getMimeType());
+                break;
             case self::ACTION_TYPE_ENTITY . self::OPERATION_RETRIEVE:
                 $item = $this->loadItem($quote, $this->getRequest()->getParam('id'));
                 $this->_render($this->prepareResource($item));
