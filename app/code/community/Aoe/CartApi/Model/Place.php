@@ -24,7 +24,7 @@ class Aoe_CartApi_Model_Place extends Aoe_CartApi_Model_Resource
         $quote = $this->loadQuote();
 
         switch ($this->getActionType() . $this->getOperation()) {
-            case self::ACTION_TYPE_ENTITY . self::OPERATION_CREATE;
+            case self::ACTION_TYPE_ENTITY . self::OPERATION_CREATE:
                 $data = $this->placeOrder($quote);
                 $this->getResponse()->setHttpResponseCode(Mage_Api2_Model_Server::HTTP_CREATED);
                 $this->_render($data);
