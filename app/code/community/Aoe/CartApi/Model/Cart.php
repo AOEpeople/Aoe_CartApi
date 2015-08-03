@@ -271,7 +271,11 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
                     }
                     break;
                 case 'payment':
-                    // TODO
+                    if (array_key_exists('payment', $data) && $this->_isSubCallAllowed('aoe_cartapi_payment')) {
+                        /** @var Aoe_CartApi_Model_Payment $subModel */
+                        $subModel = $this->_getSubModel('aoe_cartapi_payment', []);
+                        $subModel->updateResource($resource->getPayment(), $data['payment']);
+                    }
                     break;
             }
         }
