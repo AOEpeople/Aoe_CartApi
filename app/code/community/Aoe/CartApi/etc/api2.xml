@@ -303,6 +303,37 @@
                     </route_entity>
                 </routes>
             </aoe_cartapi_shipping_address>
+            <aoe_cartapi_payment translate="title" module="Aoe_CartApi">
+                <versions>1</versions>
+                <group>aoe_cartapi</group>
+                <model>Aoe_CartApi/Payment</model>
+                <title>Payment</title>
+                <sort_order>60</sort_order>
+                <privileges>
+                    <guest>
+                        <create>1</create>
+                        <retrieve>1</retrieve>
+                        <update>1</update>
+                        <delete>1</delete>
+                    </guest>
+                    <customer>
+                        <create>1</create>
+                        <retrieve>1</retrieve>
+                        <update>1</update>
+                        <delete>1</delete>
+                    </customer>
+                </privileges>
+                <attributes translate="" module="Aoe_CartApi">
+                    <method>Payment Method</method>
+                    <data>Payment Data</data>
+                </attributes>
+                <routes>
+                    <route_entity>
+                        <route>/cart/payment</route>
+                        <action_type>entity</action_type>
+                    </route_entity>
+                </routes>
+            </aoe_cartapi_payment>
 
             <aoe_cartapi_shipping_method translate="title" module="Aoe_CartApi">
                 <versions>1</versions>
