@@ -179,7 +179,7 @@ class Aoe_CartApi_Model_ShippingAddress extends Aoe_CartApi_Model_Resource
             $allowedAttributes = $filter->getAllowedAttributes(Mage_Api2_Model_Resource::OPERATION_ATTRIBUTE_WRITE);
 
             // Update model
-            $this->saveResourceAttributes($resource, $allowedAttributes, $data);
+            $this->saveResourceAttributes($resource, array_merge($allowedAttributes, ['region_id']), $data);
         }
 
         // Validate address

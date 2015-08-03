@@ -163,7 +163,7 @@ class Aoe_CartApi_Model_BillingAddress extends Aoe_CartApi_Model_Resource
             $allowedAttributes = $filter->getAllowedAttributes(Mage_Api2_Model_Resource::OPERATION_ATTRIBUTE_WRITE);
 
             // Update model
-            $this->saveResourceAttributes($resource, $allowedAttributes, $data);
+            $this->saveResourceAttributes($resource, array_merge($allowedAttributes, ['region_id']), $data);
         }
 
         // Update the shipping address if it is meant to match the billing address
