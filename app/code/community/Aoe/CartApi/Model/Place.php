@@ -27,6 +27,7 @@ class Aoe_CartApi_Model_Place extends Aoe_CartApi_Model_Resource
             case self::ACTION_TYPE_ENTITY . self::OPERATION_CREATE:
                 $data = $this->placeOrder($quote);
                 $this->getResponse()->setHttpResponseCode(Mage_Api2_Model_Server::HTTP_CREATED);
+                $this->getResponse()->setHeader('Location', (isset($data['url']) ? $data['url'] : ''));
                 $this->_render($data);
                 break;
             default:
@@ -83,7 +84,7 @@ class Aoe_CartApi_Model_Place extends Aoe_CartApi_Model_Resource
         $order = $service->getOrder();
 
         // Generate response
-        $data = new Varien_Object(['status' => 'success', 'order' => $order->getIncrementId()]);
+        $data = new Varien_Object(['status' => 'success', 'order' => $order->getIncrementId(), 'url' => '']);
 
         // Fire event - after place
         Mage::dispatchEvent('aoe_cartapi_cart_place_after', ['filter' => $filter, 'quote' => $quote, 'order' => $order, 'data' => $data]);

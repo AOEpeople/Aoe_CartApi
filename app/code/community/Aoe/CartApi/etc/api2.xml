@@ -352,6 +352,7 @@
                 <attributes translate="" module="Aoe_CartApi">
                     <status>Status</status>
                     <order>Order Increment ID</order>
+                    <url>Order URL</url>
                 </attributes>
                 <routes>
                     <route_entity>
