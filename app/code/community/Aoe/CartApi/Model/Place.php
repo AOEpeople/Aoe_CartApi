@@ -78,9 +78,15 @@ class Aoe_CartApi_Model_Place extends Aoe_CartApi_Model_Resource
             }
         }
 
+        // Convert a quote into an order
         /** @var Mage_Sales_Model_Service_Quote $service */
         $service = Mage::getModel('sales/service_quote', $quote);
         $service->submitOrder();
+
+        // Save the quote again to capture the is_active change
+        $quote->save();
+
+        // Get the new order
         $order = $service->getOrder();
 
         // Generate response
