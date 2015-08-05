@@ -347,12 +347,44 @@
                 </routes>
             </aoe_cartapi_payment>
 
+            <aoe_cartapi_validate translate="title" module="Aoe_CartApi">
+                <versions>1</versions>
+                <group>aoe_cartapi</group>
+                <model>Aoe_CartApi/Validate</model>
+                <title>Validate</title>
+                <sort_order>110</sort_order>
+                <privileges>
+                    <guest>
+                        <create>1</create>
+                    </guest>
+                    <customer>
+                        <create>1</create>
+                    </customer>
+                </privileges>
+                <attributes translate="" module="Aoe_CartApi">
+                    <errors>Errors</errors>
+                </attributes>
+                <force_attributes>
+                    <guest>
+                        <status>1</status>
+                    </guest>
+                    <customer>
+                        <status>1</status>
+                    </customer>
+                </force_attributes>
+                <routes>
+                    <route_entity>
+                        <route>/cart/validate</route>
+                        <action_type>entity</action_type>
+                    </route_entity>
+                </routes>
+            </aoe_cartapi_validate>
             <aoe_cartapi_place translate="title" module="Aoe_CartApi">
                 <versions>1</versions>
                 <group>aoe_cartapi</group>
                 <model>Aoe_CartApi/Place</model>
                 <title>Place</title>
-                <sort_order>110</sort_order>
+                <sort_order>120</sort_order>
                 <privileges>
                     <guest>
                         <create>1</create>
