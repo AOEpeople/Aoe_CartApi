@@ -57,14 +57,19 @@ class Aoe_CartApi_Model_Payment extends Aoe_CartApi_Model_Resource
         $this->setActionType(self::ACTION_TYPE_ENTITY);
         $this->setOperation(self::OPERATION_RETRIEVE);
 
+        // Get a filter instance
+        $filter = $this->getFilter();
+
         // Get raw outbound data
-        $data = $resource->toArray();
+        $data = $this->loadResourceAttributes($resource, $filter->getAttributesToInclude());
 
-        // Map data keys
-        $data = $this->unmapAttributes($data);
+        // Fire event
+        $data = new Varien_Object($data);
+        Mage::dispatchEvent('aoe_cartapi_payment_prepare', ['data' => $data, 'filter' => $filter, 'resource' => $resource]);
+        $data = $data->getData();
 
-        // Filter raw outbound data
-        $data = $this->getFilter()->out($data);
+        // Filter outbound data
+        $data = $filter->out($data);
 
         // Fix data types
         $data = $this->fixTypes($data);
