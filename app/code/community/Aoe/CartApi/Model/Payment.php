@@ -110,11 +110,16 @@ class Aoe_CartApi_Model_Payment extends Aoe_CartApi_Model_Resource
         $this->setActionType(self::ACTION_TYPE_ENTITY);
         $this->setOperation(self::OPERATION_UPDATE);
 
-        // Filter raw incoming data
-        $data = $this->getFilter()->in($data);
+        // Get a filter instance
+        $filter = $this->getFilter();
 
-        // Map data keys
-        $data = $this->mapAttributes($data);
+        // Fire event - before filter
+        $data = new Varien_Object($data);
+        Mage::dispatchEvent('aoe_cartapi_payment_update_before', ['data' => $data, 'filter' => $filter, 'resource' => $resource]);
+        $data = $data->getData();
+
+        // Filter raw incoming data
+        $data = $filter->in($data);
 
         // Clean up input format to what Magento expects
         if (isset($data['data']) && is_array($data['data'])) {
@@ -124,6 +129,9 @@ class Aoe_CartApi_Model_Payment extends Aoe_CartApi_Model_Resource
         } else {
             unset($data['data']);
         }
+
+        // Map data keys
+        $data = $this->mapAttributes($data);
 
         // Manual data setting
         $quote = $resource->getQuote();
@@ -144,6 +152,10 @@ class Aoe_CartApi_Model_Payment extends Aoe_CartApi_Model_Resource
 
         // Update model
         $resource->importData($data);
+
+        // Fire event - after
+        $data = new Varien_Object($data);
+        Mage::dispatchEvent('aoe_cartapi_payment_update_after', ['data' => $data, 'filter' => $filter, 'resource' => $resource]);
 
         // Restore old state
         $this->setActionType($actionType);
