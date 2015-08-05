@@ -124,7 +124,7 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
 
         // Add in validation/error messages
         if (in_array('messages', $filter->getAttributesToInclude())) {
-            $data['messages'] = [];
+            $data['messages'] = new ArrayObject();
             foreach ($resource->getMessages() as $message) {
                 /** @var Mage_Core_Model_Message_Abstract $message */
                 $data['messages'][$message->getType()][] = $message->getText();
