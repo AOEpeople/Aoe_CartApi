@@ -92,12 +92,21 @@ Update attributes of the cart resource. Using the 'embed' query parameter will a
     
 Supported query parameters
 
+* attrs
+    * comma separated list of resource attributes you want returned 
+        * email
+        * coupon_code
+        * shipping_method
+        * qty
+        * totals
+        * messages
+        * has_error
 * embed
     * comma separated list of sub-resources to embed (R) and possibly update (W)
         * items (R)
         * billing_address (R/W)
         * shipping_address (R/W)
-        * shipping_methods
+        * shipping_methods (R)
 
 ### DELETE /api/rest/cart
 Reset the cart and all sub-resources
@@ -164,6 +173,24 @@ Add an product to the cart. This will re-use existing items in the cart if possi
         "qty": 1
     }
 
+Supported query parameters
+
+* attrs
+    * comma separated list of resource attributes you want returned 
+        * item_id
+        * sku
+        * name
+        * images
+        * children
+        * qty
+        * backorder_qty
+        * original_price
+        * price
+        * row_total
+        * messages
+        * error_info
+        * is_saleable
+
 ### DELETE /api/rest/cart/items
 Remove all items from the cart
 
@@ -226,11 +253,30 @@ Update the quantity for an item in the cart
         "qty": 4
     }
 
+Supported query parameters
+
+* attrs
+    * comma separated list of resource attributes you want returned 
+        * item_id
+        * sku
+        * name
+        * images
+        * children
+        * qty
+        * backorder_qty
+        * original_price
+        * price
+        * row_total
+        * messages
+        * error_info
+        * is_saleable
+
 ### DELETE /api/rest/cart/items/:item_id
 Remove an item from the cart
 
 ### GET /api/rest/cart/billing_address
 Return the billing address linked to the cart
+
     {
         "firstname": "John",
         "middlename": "Quincy",
@@ -269,31 +315,47 @@ Supported query parameters
         * postcode
         * country_id
         * telephone
+        * formatted_html
+        * formatted_text
         * validation_errors - This will **only** be populated in response to a PUT/POST
 
 ### PUT/POST /api/rest/cart/billing_address
 Update the billing address. All attributes are optional.
 
-Regions are a bit of 'magic'. You can send the Mage_Directory DB ID, The region 'code', or the region 'name'. The code and name are looked up in relation to the currently selected country.
+Regions are a bit of 'magic'. 
+You can send the Mage_Directory DB ID, The region 'code', or the region 'name'. 
+The code and name are looked up in relation to the currently selected country.
+The stored region is either the valid region name (looked up by ID/Code/Name) or the value sent as-is.
 
     {
         "region": "FL"
     }
+
+Supported query parameters
+
+* attrs
+    * comma separated list of resource attributes you want returned 
+        * firstname
+        * middlename
+        * lastname
+        * prefix
+        * suffix
+        * company
+        * street
+        * city
+        * region
+        * postcode
+        * country_id
+        * telephone
+        * formatted_html
+        * formatted_text
+        * validation_errors - This will **only** be populated in response to a PUT/POST
 
 ### DELETE /api/rest/cart/billing_address
 Reset the billing address
 
-### PUT/POST /api/rest/cart/shipping_address
-Update the shipping address All attributes are optional.
-
-Regions are a bit of 'magic'. You can send the Mage_Directory DB ID, The region 'code', or the region 'name'. The code and name are looked up in relation to the currently selected country.
-
-    {
-        "region": "FL"
-    }
-
-### DELETE /api/rest/cart/shipping_address
-Reset the shipping address
+### GET /api/rest/cart/shipping_address
+Return the shipping address linked to the cart
 
     {
         "firstname": "John",
@@ -333,7 +395,44 @@ Supported query parameters
         * postcode
         * country_id
         * telephone
+        * formatted_html
+        * formatted_text
         * validation_errors - This will **only** be populated in response to a PUT/POST
+
+### PUT/POST /api/rest/cart/shipping_address
+Update the shipping address All attributes are optional.
+
+Regions are a bit of 'magic'. 
+You can send the Mage_Directory DB ID, The region 'code', or the region 'name'. 
+The code and name are looked up in relation to the currently selected country.
+The stored region is either the valid region name (looked up by ID/Code/Name) or the value sent as-is.
+
+    {
+        "region": "FL"
+    }
+
+Supported query parameters
+
+* attrs
+    * comma separated list of resource attributes you want returned 
+        * firstname
+        * middlename
+        * lastname
+        * prefix
+        * suffix
+        * company
+        * street
+        * city
+        * region
+        * postcode
+        * country_id
+        * telephone
+        * formatted_html
+        * formatted_text
+        * validation_errors - This will **only** be populated in response to a PUT/POST
+
+### DELETE /api/rest/cart/shipping_address
+Reset the shipping address
 
 ## Additional cart related resources
 
