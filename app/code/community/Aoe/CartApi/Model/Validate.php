@@ -26,7 +26,7 @@ class Aoe_CartApi_Model_Validate extends Aoe_CartApi_Model_Resource
         switch ($this->getActionType() . $this->getOperation()) {
             case self::ACTION_TYPE_ENTITY . self::OPERATION_CREATE:
                 $data = $this->validateQuote($quote);
-                if($data['status'] === 'success') {
+                if ($data['status'] === 'success') {
                     $this->getResponse()->setHttpResponseCode(Mage_Api2_Model_Server::HTTP_OK);
                 } else {
                     $this->getResponse()->setHttpResponseCode(422);
@@ -82,15 +82,15 @@ class Aoe_CartApi_Model_Validate extends Aoe_CartApi_Model_Resource
         }
 
         $errors = [];
-        
+
         if (!$quote->isVirtual()) {
             $address = $quote->getShippingAddress();
             $addressValidation = $address->validate();
             if ($addressValidation !== true) {
                 $errors['shipping_address'] = $addressValidation;
             }
-            $method= $address->getShippingMethod();
-            $rate  = $address->getShippingRateByCode($method);
+            $method = $address->getShippingMethod();
+            $rate = $address->getShippingRateByCode($method);
             if (!$quote->isVirtual() && (!$method || !$rate)) {
                 $errors['shipping_method'] = [$this->__('Please specify a valid shipping method.')];
             }
@@ -105,7 +105,7 @@ class Aoe_CartApi_Model_Validate extends Aoe_CartApi_Model_Resource
             if (!$quote->getPayment()->getMethod() || !$quote->getPayment()->getMethodInstance()) {
                 $errors['payment'] = [$this->__('Please select a valid payment method.')];
             }
-        } catch(Mage_Core_Exception $e) {
+        } catch (Mage_Core_Exception $e) {
             $errors['payment'] = [$this->__('Please select a valid payment method.')];
         }
 
