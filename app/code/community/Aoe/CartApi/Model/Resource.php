@@ -220,4 +220,9 @@ abstract class Aoe_CartApi_Model_Resource extends Mage_Api2_Model_Resource
 
         return $embeds;
     }
+
+    protected function __()
+    {
+        return call_user_func_array([$this->getHelper(), '__'], func_get_args());
+    }
 }
