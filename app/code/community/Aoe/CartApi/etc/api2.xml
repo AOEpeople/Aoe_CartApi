@@ -362,10 +362,17 @@
                     </customer>
                 </privileges>
                 <attributes translate="" module="Aoe_CartApi">
-                    <status>Status</status>
                     <order>Order Increment ID</order>
                     <url>Order URL</url>
                 </attributes>
+                <force_attributes>
+                    <guest>
+                        <status>1</status>
+                    </guest>
+                    <customer>
+                        <status>1</status>
+                    </customer>
+                </force_attributes>
                 <routes>
                     <route_entity>
                         <route>/cart/place</route>
