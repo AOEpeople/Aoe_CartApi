@@ -182,7 +182,11 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
                     }
                     break;
                 case 'payment':
-                    // TODO
+                    if ($this->_isSubCallAllowed('aoe_cartapi_payment')) {
+                        /** @var Aoe_CartApi_Model_Payment $subModel */
+                        $subModel = $this->_getSubModel('aoe_cartapi_payment', ['embed' => false]);
+                        $data['payment'] = $subModel->prepareResource($resource->getPayment());
+                    }
                     break;
             }
         }
