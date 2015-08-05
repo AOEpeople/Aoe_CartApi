@@ -436,6 +436,59 @@ Reset the shipping address
 
 ## Additional cart related resources
 
+### GET /api/rest/cart/crosssells
+Return a collection of crosssell products. 
+**NOTE**: This collection changes as the cart data changes.
+
+    {
+        "000-000": {
+            "sku": "000-000"
+            "name": "Dummy Product",
+            "description": "Dummy Product",
+            "short_description": "Dummy Product",
+            "url": "<url>",
+            "images": {
+                "normal": "<url>",
+                "small": "<url>",
+                "thumbnail": "<url>",
+            },
+            "is_in_stock": true,
+            "price": {
+                "formatted": "$0.00",
+                "amount": 0,
+                "currency": "USD"
+            },
+            "final_price": {
+                "formatted": "$0.00",
+                "amount": 0,
+                "currency": "USD"
+            },
+            "is_saleable": true,
+            "qty": 10000,
+            "min_sale_qty": null,
+            "max_sale_qty": 100
+        }
+    }
+
+Supported query parameters
+
+* attrs
+    * comma separated list of resource attributes you want returned 
+        * sku
+        * name
+        * description
+        * short_description
+        * url
+        * images
+        * is_in_stock
+        * price
+        * final_price
+        * is_saleable
+        * qty
+        * min_sale_qty
+        * max_sale_qty
+
+
 ### GET /api/rest/cart/shipping_methods
 Return a collection of available shipping methods. 
 **NOTE**: This collection changes as the cart data changes.
