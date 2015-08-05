@@ -212,6 +212,8 @@
                     <telephone>telephone</telephone>
                     <fax>fax</fax>
                     <save_in_address_book>save_in_address_book</save_in_address_book>
+                    <formatted_html>HTML Formatted Address</formatted_html>
+                    <formatted_text>Text Formatted Address</formatted_text>
                     <validation_errors>Validation Errors</validation_errors>
                 </attributes>
                 <exclude_attributes>
@@ -223,11 +225,15 @@
                         <write>
                             <customer_address_id>1</customer_address_id>
                             <save_in_address_book>1</save_in_address_book>
+                            <formatted_html>1</formatted_html>
+                            <formatted_text>1</formatted_text>
                             <validation_errors>1</validation_errors>
                         </write>
                     </guest>
                     <customer>
                         <write>
+                            <formatted_html>1</formatted_html>
+                            <formatted_text>1</formatted_text>
                             <validation_errors>1</validation_errors>
                         </write>
                     </customer>
@@ -276,6 +282,8 @@
                     <telephone>telephone</telephone>
                     <fax>fax</fax>
                     <save_in_address_book>save_in_address_book</save_in_address_book>
+                    <formatted_html>HTML Formatted Address</formatted_html>
+                    <formatted_text>Text Formatted Address</formatted_text>
                     <validation_errors>Validation Errors</validation_errors>
                 </attributes>
                 <exclude_attributes>
@@ -287,11 +295,15 @@
                         <write>
                             <customer_address_id>1</customer_address_id>
                             <save_in_address_book>1</save_in_address_book>
+                            <formatted_html>1</formatted_html>
+                            <formatted_text>1</formatted_text>
                             <validation_errors>1</validation_errors>
                         </write>
                     </guest>
                     <customer>
                         <write>
+                            <formatted_html>1</formatted_html>
+                            <formatted_text>1</formatted_text>
                             <validation_errors>1</validation_errors>
                         </write>
                     </customer>

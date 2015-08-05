@@ -92,6 +92,14 @@ class Aoe_CartApi_Model_ShippingAddress extends Aoe_CartApi_Model_Resource
         // BEGIN - Manual attributes
         // =========================
 
+        if (in_array('formatted_html', $filter->getAttributesToInclude())) {
+            $data['formatted_html'] = $resource->format('html');
+        }
+
+        if (in_array('formatted_text', $filter->getAttributesToInclude())) {
+            $data['formatted_text'] = $resource->format('text');
+        }
+
         if (in_array('validation_errors', $filter->getAttributesToInclude())) {
             $data['validation_errors'] = array_filter(array_map('trim', (array)$resource->getData('validation_errors')));
         }
