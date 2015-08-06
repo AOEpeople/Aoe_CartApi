@@ -396,6 +396,7 @@
                 <attributes translate="" module="Aoe_CartApi">
                     <order>Order Increment ID</order>
                     <url>Order URL</url>
+                    <errors>Errors</errors>
                 </attributes>
                 <force_attributes>
                     <guest>

@@ -26,8 +26,12 @@ class Aoe_CartApi_Model_Place extends Aoe_CartApi_Model_Resource
         switch ($this->getActionType() . $this->getOperation()) {
             case self::ACTION_TYPE_ENTITY . self::OPERATION_CREATE:
                 $data = $this->placeOrder($quote);
-                $this->getResponse()->setHttpResponseCode(Mage_Api2_Model_Server::HTTP_CREATED);
-                $this->getResponse()->setHeader('Location', (isset($data['url']) ? $data['url'] : ''));
+                if ($data['status'] === 'success') {
+                    $this->getResponse()->setHttpResponseCode(Mage_Api2_Model_Server::HTTP_CREATED);
+                    $this->getResponse()->setHeader('Location', (isset($data['url']) ? $data['url'] : ''));
+                } else {
+                    $this->getResponse()->setHttpResponseCode(422);
+                }
                 $this->_render($data);
                 break;
             default:
@@ -78,25 +82,46 @@ class Aoe_CartApi_Model_Place extends Aoe_CartApi_Model_Resource
             }
         }
 
-        // Convert a quote into an order
-        /** @var Mage_Sales_Model_Service_Quote $service */
-        $service = Mage::getModel('sales/service_quote', $quote);
-        $service->submitOrder();
+        try {
+            // Convert a quote into an order
+            /** @var Mage_Sales_Model_Service_Quote $service */
+            $service = Mage::getModel('sales/service_quote', $quote);
+            $service->submitOrder();
 
-        // Save the quote again to capture the is_active change
-        $quote->save();
+            // Save the quote again to capture the is_active change
+            $quote->save();
 
-        // Get the new order
-        $order = $service->getOrder();
+            // Get the new order
+            $order = $service->getOrder();
 
-        // Generate response
-        $data = new Varien_Object(['status' => 'success', 'order' => $order->getIncrementId(), 'url' => '']);
+            // Generate response
+            $data = new Varien_Object(['status' => 'success', 'order' => $order->getIncrementId(), 'url' => '']);
+
+            // Fire event - success
+            Mage::dispatchEvent('aoe_cartapi_cart_place_success', ['filter' => $filter, 'quote' => $quote, 'order' => $order, 'data' => $data]);
+
+            // Get response data
+            $data = $data->getData();
+        } catch (Mage_Core_Exception $e) {
+            $errors = $this->getHelper()->validateQuote($quote);
+
+            // If we have no validation errors, re-throw the exception
+            if(!count($errors)) {
+                throw $e;
+            }
+
+            // Generate response
+            $data = new Varien_Object(['status' => 'error', 'errors' => $errors]);
+
+            // Fire event - error
+            Mage::dispatchEvent('aoe_cartapi_cart_place_error', ['filter' => $filter, 'quote' => $quote, 'data' => $data]);
+
+            // Get response data
+            $data = $data->getData();
+        }
 
         // Fire event - after place
-        Mage::dispatchEvent('aoe_cartapi_cart_place_after', ['filter' => $filter, 'quote' => $quote, 'order' => $order, 'data' => $data]);
-
-        // Get response data
-        $data = $data->getData();
+        Mage::dispatchEvent('aoe_cartapi_cart_place_after', ['filter' => $filter, 'quote' => $quote, 'data' => $data]);
 
         // Filter outbound data
         $data = $filter->out($data);
