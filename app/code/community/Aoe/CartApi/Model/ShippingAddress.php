@@ -28,7 +28,7 @@ class Aoe_CartApi_Model_ShippingAddress extends Aoe_CartApi_Model_Resource
      * @var string[]
      */
     protected $manualAttributes = [
-        'validation_errors'
+        'validation_errors',
     ];
 
     /**
