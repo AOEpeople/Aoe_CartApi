@@ -80,6 +80,47 @@ class Aoe_CartApi_Helper_Data extends Mage_Core_Helper_Data
         return $quote;
     }
 
+    public function validateQuote(Mage_Sales_Model_Quote $quote)
+    {
+        $errors = [];
+
+        if (!$quote->isVirtual()) {
+            $address = $quote->getShippingAddress();
+
+            if ($address->getSameAsBilling()) {
+                // Copy data from billing address
+                $address->importCustomerAddress($quote->getBillingAddress()->exportCustomerAddress());
+                $address->setSameAsBilling(1);
+            }
+
+            $addressValidation = $address->validate();
+            if ($addressValidation !== true) {
+                $errors['shipping_address'] = $addressValidation;
+            }
+
+            $method = $address->getShippingMethod();
+            $rate = $address->getShippingRateByCode($method);
+            if (!$method || !$rate) {
+                $errors['shipping_method'] = [$this->__('Please specify a valid shipping method.')];
+            }
+        }
+
+        $addressValidation = $quote->getBillingAddress()->validate();
+        if ($addressValidation !== true) {
+            $errors['billing_address'] = $addressValidation;
+        }
+
+        try {
+            if (!$quote->getPayment()->getMethod() || !$quote->getPayment()->getMethodInstance()) {
+                $errors['payment'] = [$this->__('Please select a valid payment method.')];
+            }
+        } catch (Mage_Core_Exception $e) {
+            $errors['payment'] = [$this->__('Please select a valid payment method.')];
+        }
+
+        return $errors;
+    }
+
     /**
      * Remap attribute keys
      *

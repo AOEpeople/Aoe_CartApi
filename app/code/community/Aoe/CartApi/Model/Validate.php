@@ -46,68 +46,7 @@ class Aoe_CartApi_Model_Validate extends Aoe_CartApi_Model_Resource
         // Fire event - before place
         Mage::dispatchEvent('aoe_cartapi_cart_validate_before', ['filter' => $filter, 'quote' => $quote]);
 
-        if ($quote->getCustomerId()) {
-            $customer = $quote->getCustomer();
-            $billing = $quote->getBillingAddress();
-
-            if (!$billing->getCustomerId() || $billing->getSaveInAddressBook()) {
-                $customerBilling = $billing->exportCustomerAddress();
-                $customer->addAddress($customerBilling);
-                $billing->setCustomerAddress($customerBilling);
-            }
-
-            if (!$quote->isVirtual()) {
-                $shipping = $quote->getShippingAddress();
-                if ($shipping->getSameAsBilling()) {
-                    // Copy data from billing address
-                    $shipping->importCustomerAddress($quote->getBillingAddress()->exportCustomerAddress());
-                    $shipping->setSameAsBilling(1);
-                } elseif (!$shipping->getCustomerId() || $shipping->getSaveInAddressBook()) {
-                    $customerShipping = $shipping->exportCustomerAddress();
-                    $customer->addAddress($customerShipping);
-                    $shipping->setCustomerAddress($customerShipping);
-                }
-            }
-        } else {
-            $quote->setCustomerId(null);
-            $quote->setCustomerEmail($quote->getBillingAddress()->getEmail());
-            $quote->setCustomerIsGuest(true);
-            $quote->setCustomerGroupId(Mage_Customer_Model_Group::NOT_LOGGED_IN_ID);
-
-            if (!$quote->isVirtual() && $quote->getShippingAddress()->getSameAsBilling()) {
-                // Copy data from billing address
-                $quote->getShippingAddress()->importCustomerAddress($quote->getBillingAddress()->exportCustomerAddress());
-                $quote->getShippingAddress()->setSameAsBilling(1);
-            }
-        }
-
-        $errors = [];
-
-        if (!$quote->isVirtual()) {
-            $address = $quote->getShippingAddress();
-            $addressValidation = $address->validate();
-            if ($addressValidation !== true) {
-                $errors['shipping_address'] = $addressValidation;
-            }
-            $method = $address->getShippingMethod();
-            $rate = $address->getShippingRateByCode($method);
-            if (!$quote->isVirtual() && (!$method || !$rate)) {
-                $errors['shipping_method'] = [$this->__('Please specify a valid shipping method.')];
-            }
-        }
-
-        $addressValidation = $quote->getBillingAddress()->validate();
-        if ($addressValidation !== true) {
-            $errors['billing_address'] = $addressValidation;
-        }
-
-        try {
-            if (!$quote->getPayment()->getMethod() || !$quote->getPayment()->getMethodInstance()) {
-                $errors['payment'] = [$this->__('Please select a valid payment method.')];
-            }
-        } catch (Mage_Core_Exception $e) {
-            $errors['payment'] = [$this->__('Please select a valid payment method.')];
-        }
+        $errors = $this->getHelper()->validateQuote($quote);
 
         // Generate response
         $data = new Varien_Object(['status' => (empty($errors) ? 'success' : 'error'), 'errors' => $errors]);
