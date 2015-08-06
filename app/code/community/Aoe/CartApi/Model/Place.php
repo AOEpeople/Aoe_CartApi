@@ -106,7 +106,7 @@ class Aoe_CartApi_Model_Place extends Aoe_CartApi_Model_Resource
             $errors = $this->getHelper()->validateQuote($quote);
 
             // If we have no validation errors, re-throw the exception
-            if(!count($errors)) {
+            if (!count($errors)) {
                 throw $e;
             }
 
