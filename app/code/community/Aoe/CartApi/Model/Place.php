@@ -54,42 +54,53 @@ class Aoe_CartApi_Model_Place extends Aoe_CartApi_Model_Resource
             $quote->getShippingAddress()->setSameAsBilling(1);
         }
 
-        if ($quote->getCustomerId()) {
-            $customer = $quote->getCustomer();
-            $billing = $quote->getBillingAddress();
+        // Run the validation code
+        $errors = $this->getHelper()->validateQuote($quote);
+        if (count($errors)) {
+            // Generate response
+            $data = new Varien_Object(['status' => 'error', 'errors' => $errors]);
 
-            if (!$billing->getCustomerId() || $billing->getSaveInAddressBook()) {
-                $customerBilling = $billing->exportCustomerAddress();
-                $customer->addAddress($customerBilling);
-                $billing->setCustomerAddress($customerBilling);
-            }
+            // Fire event - error
+            Mage::dispatchEvent('aoe_cartapi_cart_place_error', ['filter' => $filter, 'quote' => $quote, 'data' => $data]);
 
-            if (!$quote->isVirtual()) {
-                $shipping = $quote->getShippingAddress();
-                if ($shipping->getSameAsBilling()) {
+            // Get response data
+            $data = $data->getData();
+        } else {
+            if ($quote->getCustomerId()) {
+                $customer = $quote->getCustomer();
+                $billing = $quote->getBillingAddress();
+
+                if (!$billing->getCustomerId() || $billing->getSaveInAddressBook()) {
+                    $customerBilling = $billing->exportCustomerAddress();
+                    $customer->addAddress($customerBilling);
+                    $billing->setCustomerAddress($customerBilling);
+                }
+
+                if (!$quote->isVirtual()) {
+                    $shipping = $quote->getShippingAddress();
+                    if ($shipping->getSameAsBilling()) {
+                        // Copy data from billing address
+                        $shipping->importCustomerAddress($quote->getBillingAddress()->exportCustomerAddress());
+                        $shipping->setSameAsBilling(1);
+                    } elseif (!$shipping->getCustomerId() || $shipping->getSaveInAddressBook()) {
+                        $customerShipping = $shipping->exportCustomerAddress();
+                        $customer->addAddress($customerShipping);
+                        $shipping->setCustomerAddress($customerShipping);
+                    }
+                }
+            } else {
+                $quote->setCustomerId(null);
+                $quote->setCustomerEmail($quote->getBillingAddress()->getEmail());
+                $quote->setCustomerIsGuest(true);
+                $quote->setCustomerGroupId(Mage_Customer_Model_Group::NOT_LOGGED_IN_ID);
+
+                if (!$quote->isVirtual() && $quote->getShippingAddress()->getSameAsBilling()) {
                     // Copy data from billing address
-                    $shipping->importCustomerAddress($quote->getBillingAddress()->exportCustomerAddress());
-                    $shipping->setSameAsBilling(1);
-                } elseif (!$shipping->getCustomerId() || $shipping->getSaveInAddressBook()) {
-                    $customerShipping = $shipping->exportCustomerAddress();
-                    $customer->addAddress($customerShipping);
-                    $shipping->setCustomerAddress($customerShipping);
+                    $quote->getShippingAddress()->importCustomerAddress($quote->getBillingAddress()->exportCustomerAddress());
+                    $quote->getShippingAddress()->setSameAsBilling(1);
                 }
             }
-        } else {
-            $quote->setCustomerId(null);
-            $quote->setCustomerEmail($quote->getBillingAddress()->getEmail());
-            $quote->setCustomerIsGuest(true);
-            $quote->setCustomerGroupId(Mage_Customer_Model_Group::NOT_LOGGED_IN_ID);
 
-            if (!$quote->isVirtual() && $quote->getShippingAddress()->getSameAsBilling()) {
-                // Copy data from billing address
-                $quote->getShippingAddress()->importCustomerAddress($quote->getBillingAddress()->exportCustomerAddress());
-                $quote->getShippingAddress()->setSameAsBilling(1);
-            }
-        }
-
-        try {
             // Convert a quote into an order
             /** @var Mage_Sales_Model_Service_Quote $service */
             $service = Mage::getModel('sales/service_quote', $quote);
@@ -106,22 +117,6 @@ class Aoe_CartApi_Model_Place extends Aoe_CartApi_Model_Resource
 
             // Fire event - success
             Mage::dispatchEvent('aoe_cartapi_cart_place_success', ['filter' => $filter, 'quote' => $quote, 'order' => $order, 'data' => $data]);
-
-            // Get response data
-            $data = $data->getData();
-        } catch (Mage_Core_Exception $e) {
-            $errors = $this->getHelper()->validateQuote($quote);
-
-            // If we have no validation errors, re-throw the exception
-            if (!count($errors)) {
-                throw $e;
-            }
-
-            // Generate response
-            $data = new Varien_Object(['status' => 'error', 'errors' => $errors]);
-
-            // Fire event - error
-            Mage::dispatchEvent('aoe_cartapi_cart_place_error', ['filter' => $filter, 'quote' => $quote, 'data' => $data]);
 
             // Get response data
             $data = $data->getData();
