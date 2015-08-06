@@ -191,12 +191,8 @@ class Aoe_CartApi_Model_ShippingAddress extends Aoe_CartApi_Model_Resource
         }
 
         // Validate address
-        /* @var Mage_Customer_Model_Form $addressForm */
-        $addressForm = Mage::getModel('customer/form');
-        $addressForm->setFormCode('customer_address_edit')->setEntityType('customer_address');
-        $addressForm->setEntity($resource);
-        $addressErrors = $addressForm->validateData($resource->getData());
-        if ($addressErrors !== true) {
+        $addressErrors = $this->getHelper()->validateQuoteAddress($resource);
+        if (!empty($addressErrors)) {
             $resource->setData('validation_errors', $addressErrors);
         }
 
