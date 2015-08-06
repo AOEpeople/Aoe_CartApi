@@ -47,6 +47,13 @@ class Aoe_CartApi_Model_Place extends Aoe_CartApi_Model_Resource
         // Fire event - before place
         Mage::dispatchEvent('aoe_cartapi_cart_place_before', ['filter' => $filter, 'quote' => $quote]);
 
+        // Prepare the quote for validation
+        if (!$quote->isVirtual() && $quote->getShippingAddress()->getSameAsBilling()) {
+            // Copy data from billing address
+            $quote->getShippingAddress()->importCustomerAddress($quote->getBillingAddress()->exportCustomerAddress());
+            $quote->getShippingAddress()->setSameAsBilling(1);
+        }
+
         if ($quote->getCustomerId()) {
             $customer = $quote->getCustomer();
             $billing = $quote->getBillingAddress();
