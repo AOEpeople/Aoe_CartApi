@@ -80,34 +80,31 @@ class Aoe_CartApi_Helper_Data extends Mage_Core_Helper_Data
         return $quote;
     }
 
+    /**
+     * @param Mage_Sales_Model_Quote $quote
+     *
+     * @return array[]
+     */
     public function validateQuote(Mage_Sales_Model_Quote $quote)
     {
         $errors = [];
 
         if (!$quote->isVirtual()) {
-            $address = $quote->getShippingAddress();
-
-            if ($address->getSameAsBilling()) {
-                // Copy data from billing address
-                $address->importCustomerAddress($quote->getBillingAddress()->exportCustomerAddress());
-                $address->setSameAsBilling(1);
+            $addressErrors = $this->validateQuoteAddress($quote->getShippingAddress());
+            if (!empty($addressErrors)) {
+                $errors['shipping_address'] = $addressErrors;
             }
 
-            $addressValidation = $address->validate();
-            if ($addressValidation !== true) {
-                $errors['shipping_address'] = $addressValidation;
-            }
-
-            $method = $address->getShippingMethod();
-            $rate = $address->getShippingRateByCode($method);
+            $method = $quote->getShippingAddress()->getShippingMethod();
+            $rate = $quote->getShippingAddress()->getShippingRateByCode($method);
             if (!$method || !$rate) {
                 $errors['shipping_method'] = [$this->__('Please specify a valid shipping method.')];
             }
         }
 
-        $addressValidation = $quote->getBillingAddress()->validate();
-        if ($addressValidation !== true) {
-            $errors['billing_address'] = $addressValidation;
+        $addressErrors = $this->validateQuoteAddress($quote->getBillingAddress());
+        if (!empty($addressErrors)) {
+            $errors['billing_address'] = $addressErrors;
         }
 
         try {
@@ -116,6 +113,28 @@ class Aoe_CartApi_Helper_Data extends Mage_Core_Helper_Data
             }
         } catch (Mage_Core_Exception $e) {
             $errors['payment'] = [$this->__('Please select a valid payment method.')];
+        }
+
+        return $errors;
+    }
+
+    /**
+     * @param Mage_Sales_Model_Quote_Address $address
+     *
+     * @return string[]
+     */
+    public function validateQuoteAddress(Mage_Sales_Model_Quote_Address $address)
+    {
+        /* @var Mage_Customer_Model_Form $addressForm */
+        $addressForm = Mage::getModel('customer/form');
+        $addressForm->setFormCode('customer_address_edit')->setEntityType('customer_address');
+        $addressForm->setEntity($address);
+        $errors = $addressForm->validateData($address->getData());
+        if (!is_array($errors)) {
+            $errors = $address->validate();
+            if (!is_array($errors)) {
+                $errors = [];
+            }
         }
 
         return $errors;
