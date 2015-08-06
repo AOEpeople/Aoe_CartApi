@@ -64,6 +64,7 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
                     //$quote->delete();
                 }
                 $this->getResponse()->setMimeType($this->getRenderer()->getMimeType());
+                $this->getResponse()->setHttpResponseCode(204);
                 break;
             default:
                 $this->_critical(self::RESOURCE_METHOD_NOT_ALLOWED);

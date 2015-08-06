@@ -71,6 +71,7 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
                 }
                 $this->saveQuote();
                 $this->getResponse()->setMimeType($this->getRenderer()->getMimeType());
+                $this->getResponse()->setHttpResponseCode(204);
                 break;
             case self::ACTION_TYPE_ENTITY . self::OPERATION_RETRIEVE:
                 $item = $this->loadItem($quote, $this->getRequest()->getParam('id'));
@@ -94,6 +95,7 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
                 $item->delete();
                 $this->saveQuote();
                 $this->getResponse()->setMimeType($this->getRenderer()->getMimeType());
+                $this->getResponse()->setHttpResponseCode(204);
                 break;
             default:
                 $this->_critical(self::RESOURCE_METHOD_NOT_ALLOWED);

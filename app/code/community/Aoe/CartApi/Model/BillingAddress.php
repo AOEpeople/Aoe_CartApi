@@ -52,6 +52,7 @@ class Aoe_CartApi_Model_BillingAddress extends Aoe_CartApi_Model_Resource
             case self::ACTION_TYPE_ENTITY . self::OPERATION_DELETE:
                 $address->delete();
                 $this->getResponse()->setMimeType($this->getRenderer()->getMimeType());
+                $this->getResponse()->setHttpResponseCode(204);
                 break;
             default:
                 $this->_critical(self::RESOURCE_METHOD_NOT_ALLOWED);
