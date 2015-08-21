@@ -120,7 +120,7 @@ class Aoe_CartApi_Model_Place extends Aoe_CartApi_Model_Resource
                     } else {
                         $order->sendNewOrderEmail();
                     }
-                } catch(Exception $e) {
+                } catch (Exception $e) {
                     Mage::logException($e);
                 }
 
