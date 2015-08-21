@@ -113,6 +113,13 @@ class Aoe_CartApi_Model_Place extends Aoe_CartApi_Model_Resource
                 // Get the new order
                 $order = $service->getOrder();
 
+                // Send new order email
+                if (method_exists($order, 'queueNewOrderEmail')) {
+                    $order->queueNewOrderEmail();
+                } else {
+                    $order->sendNewOrderEmail();
+                }
+
                 // Generate response
                 $data = new Varien_Object(['status' => 'success', 'order' => $order->getIncrementId(), 'url' => '']);
 
