@@ -113,11 +113,15 @@ class Aoe_CartApi_Model_Place extends Aoe_CartApi_Model_Resource
                 // Get the new order
                 $order = $service->getOrder();
 
-                // Send new order email
-                if (method_exists($order, 'queueNewOrderEmail')) {
-                    $order->queueNewOrderEmail();
-                } else {
-                    $order->sendNewOrderEmail();
+                // Send new order email - failure is just logged
+                try {
+                    if (method_exists($order, 'queueNewOrderEmail')) {
+                        $order->queueNewOrderEmail();
+                    } else {
+                        $order->sendNewOrderEmail();
+                    }
+                } catch(Exception $e) {
+                    Mage::logException($e);
                 }
 
                 // Generate response
