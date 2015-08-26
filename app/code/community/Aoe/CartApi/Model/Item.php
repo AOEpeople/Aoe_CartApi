@@ -176,6 +176,13 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
         // BEGIN - Manual attributes
         // =========================
 
+        /** @var Mage_Tax_Model_Config $taxConfig */
+        $taxConfig = Mage::getModel('tax/config');
+
+        // price - including tax
+        if(in_array('row_total', $filter->getAttributesToInclude()) && $taxConfig->displayCartPricesInclTax($item->getStore())) {
+            $data['row_total'] = $item->getRowTotalInclTax();
+        }
         // original_price
         if (in_array('original_price', $filter->getAttributesToInclude())) {
             $product = $item->getProduct();
