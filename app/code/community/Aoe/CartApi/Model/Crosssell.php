@@ -105,36 +105,29 @@ class Aoe_CartApi_Model_Crosssell extends Aoe_CartApi_Model_Resource
 
     protected function prepareProduct(Mage_Catalog_Model_Product $product, Mage_Api2_Model_Acl_Filter $filter)
     {
-        $data = [];
-
         // Get raw outbound data
-        $attributes = array_diff($filter->getAttributesToInclude(), $this->manualAttributes);
-        $attributes = array_combine($attributes, $attributes);
-        $attributes = array_merge($attributes, array_intersect_key($this->attributeMap, $attributes));
-        foreach ($attributes as $externalKey => $internalKey) {
-            $data[$externalKey] = $product->getDataUsingMethod($internalKey);
-        }
+        $data = $this->loadResourceAttributes($product, $filter->getAttributesToInclude());
 
         // =========================
         // BEGIN - Manual attributes
         // =========================
 
         // Add stock data
-        if (in_array('is_saleable', $attributes)) {
+        if (in_array('is_saleable', $filter->getAttributesToInclude())) {
             $data['is_saleable'] = $product->isSaleable();
         }
         $stockItem = $product->getStockItem();
         if ($stockItem instanceof Mage_CatalogInventory_Model_Stock_Item) {
-            if (in_array('is_in_stock', $attributes)) {
+            if (in_array('is_in_stock', $filter->getAttributesToInclude())) {
                 $data['is_in_stock'] = $stockItem->getIsInStock();
             }
-            if (in_array('qty', $attributes)) {
+            if (in_array('qty', $filter->getAttributesToInclude())) {
                 $data['qty'] = $stockItem->getQty();
             }
-            if (in_array('min_sale_qty', $attributes)) {
+            if (in_array('min_sale_qty', $filter->getAttributesToInclude())) {
                 $data['min_sale_qty'] = $stockItem->getMinSaleQty();
             }
-            if (in_array('max_sale_qty', $attributes)) {
+            if (in_array('max_sale_qty', $filter->getAttributesToInclude())) {
                 $data['max_sale_qty'] = $stockItem->getMaxSaleQty();
             }
         }
