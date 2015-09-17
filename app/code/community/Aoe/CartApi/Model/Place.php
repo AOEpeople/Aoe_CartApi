@@ -134,7 +134,7 @@ class Aoe_CartApi_Model_Place extends Aoe_CartApi_Model_Resource
                 $data = $data->getData();
             } catch (Mage_Payment_Model_Info_Exception $e) {
                 // Generate response
-                $data = new Varien_Object(['status' => 'error', 'errors' => ['payment' => explode("\n", $e->getMessage())]]);
+                $data = new Varien_Object(['status' => 'error', 'errors' => ['payment' => [$e->getMessage()]]]);
 
                 // Fire event - error
                 Mage::dispatchEvent('aoe_cartapi_cart_place_error', ['filter' => $filter, 'quote' => $quote, 'data' => $data]);
