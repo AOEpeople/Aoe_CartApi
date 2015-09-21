@@ -12,6 +12,7 @@
                 <Mage_Customer/>
                 <Mage_Catalog/>
                 <Mage_Directory/>
+                <Aoe_Api2/>
             </depends>
         </Aoe_CartApi>
     </modules>

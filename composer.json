@@ -15,7 +15,8 @@
     "type": "magento-module",
     "require": {
         "php": ">= 5.4",
-        "magento-hackathon/magento-composer-installer": "*"
+        "magento-hackathon/magento-composer-installer": "*",
+        "aoepeople/aoe_api2": "*"
     },
     "require-dev": {
         "ecomdev/ecomdev_phpunit": "*",
