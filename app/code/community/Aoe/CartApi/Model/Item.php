@@ -298,9 +298,11 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
             $this->_critical('Invalid SKU', Mage_Api2_Model_Server::HTTP_BAD_REQUEST);
         }
 
-        // If the SKU is not available for the current website, throw an error
-        if (!is_array($product->getWebsiteIds()) || !in_array(Mage::app()->getStore()->getWebsiteId(), $product->getWebsiteIds())) {
-            $this->_critical('Invalid SKU', Mage_Api2_Model_Server::HTTP_BAD_REQUEST);
+        if (!Mage::app()->isSingleStoreMode()) {
+            // If the SKU is not available for the current website, throw an error
+            if (!is_array($product->getWebsiteIds()) || !in_array(Mage::app()->getStore()->getWebsiteId(), $product->getWebsiteIds())) {
+                $this->_critical('Invalid SKU', Mage_Api2_Model_Server::HTTP_BAD_REQUEST);
+            }
         }
 
         // Ensure we have a quantity
