@@ -86,6 +86,7 @@
                     <item_id>Item ID (internal)</item_id>
                     <sku>SKU</sku>
                     <name>Name</name>
+                    <url>URL</url>
                     <images>Images</images>
                     <children>Child Items</children>
                     <qty>Quantity</qty>

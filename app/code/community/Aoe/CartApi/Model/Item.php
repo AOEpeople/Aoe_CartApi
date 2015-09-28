@@ -33,6 +33,7 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
      */
     protected $manualAttributes = [
         'original_price',
+        'url',
         'images',
         'children',
         'messages',
@@ -188,6 +189,11 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
         if (in_array('original_price', $filter->getAttributesToInclude())) {
             $product = $item->getProduct();
             $data['original_price'] = $product->getPriceModel()->getPrice($product);
+        }
+
+        // Product URL
+        if (in_array('url', $filter->getAttributesToInclude())) {
+            $data['url'] = $this->getProductUrl($item);
         }
 
         // image URLs
@@ -416,6 +422,21 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
         }
 
         return $item;
+    }
+
+    protected function getProductUrl(Mage_Sales_Model_Quote_Item $item)
+    {
+        if ($item->getRedirectUrl()) {
+            return $item->getRedirectUrl();
+        }
+
+        $product = $item->getProduct();
+        $option = $item->getOptionByCode('product_type');
+        if ($option) {
+            $product = $option->getProduct();
+        }
+
+        return $product->getUrlModel()->getUrl($product);
     }
 
     protected function getImageUrls(Mage_Catalog_Model_Product $product)
