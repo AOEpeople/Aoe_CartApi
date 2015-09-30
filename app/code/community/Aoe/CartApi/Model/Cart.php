@@ -92,6 +92,14 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
         // Get the embeds list
         $embeds = $this->parseEmbeds($this->getRequest()->getParam('embed'));
 
+        // Check for the validation embed and validate the quote if needed
+        if (in_array('validation', $embeds)) {
+            $errors = $this->getHelper()->validateQuote($resource);
+            $resource->setData('__validation_errors__', $errors);
+            // Save the validation results (since address normalization happens here)
+            $this->saveQuote();
+        }
+
         // Get raw outbound data
         $data = $this->loadResourceAttributes($resource, $filter->getAttributesToInclude());
 
@@ -191,6 +199,10 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
                         $subModel = $this->_getSubModel('aoe_cartapi_payment', ['embed' => false]);
                         $data['payment'] = $subModel->prepareResource($resource->getPayment());
                     }
+                    break;
+                case 'validation':
+                    $validationErrors = $resource->getData('__validation_errors__');
+                    $data['validation'] = (is_array($validationErrors) ? $validationErrors : []);
                     break;
             }
         }
