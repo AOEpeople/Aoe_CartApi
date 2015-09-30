@@ -49,6 +49,8 @@ class Aoe_CartApi_Model_Place extends Aoe_CartApi_Model_Resource
 
         // Run the validation code
         $errors = $this->getHelper()->validateQuote($quote);
+        $this->saveQuote();
+
         if (count($errors)) {
             // Generate response
             $data = new Varien_Object(['status' => 'error', 'errors' => $errors]);

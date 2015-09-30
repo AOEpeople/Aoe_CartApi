@@ -26,6 +26,7 @@ class Aoe_CartApi_Model_Validate extends Aoe_CartApi_Model_Resource
         switch ($this->getActionType() . $this->getOperation()) {
             case self::ACTION_TYPE_ENTITY . self::OPERATION_CREATE:
                 $data = $this->validateQuote($quote);
+                $this->saveQuote();
                 if ($data['status'] === 'success') {
                     $this->getResponse()->setHttpResponseCode(Mage_Api2_Model_Server::HTTP_OK);
                 } else {
