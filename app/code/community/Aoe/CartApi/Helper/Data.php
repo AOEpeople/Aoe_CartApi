@@ -90,6 +90,12 @@ class Aoe_CartApi_Helper_Data extends Mage_Core_Helper_Data
         $errors = [];
 
         if (!$quote->isVirtual()) {
+            // Copy data from billing address
+            if ($quote->getShippingAddress()->getSameAsBilling()) {
+                $quote->getShippingAddress()->importCustomerAddress($quote->getBillingAddress()->exportCustomerAddress());
+                $quote->getShippingAddress()->setSameAsBilling(1);
+            }
+
             $addressErrors = $this->validateQuoteAddress($quote->getShippingAddress());
             if (!empty($addressErrors)) {
                 $errors['shipping_address'] = $addressErrors;

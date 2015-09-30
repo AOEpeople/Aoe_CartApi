@@ -46,13 +46,6 @@ class Aoe_CartApi_Model_Validate extends Aoe_CartApi_Model_Resource
         // Fire event - before place
         Mage::dispatchEvent('aoe_cartapi_cart_validate_before', ['filter' => $filter, 'quote' => $quote]);
 
-        // Prepare the quote for validation
-        if (!$quote->isVirtual() && $quote->getShippingAddress()->getSameAsBilling()) {
-            // Copy data from billing address
-            $quote->getShippingAddress()->importCustomerAddress($quote->getBillingAddress()->exportCustomerAddress());
-            $quote->getShippingAddress()->setSameAsBilling(1);
-        }
-
         // Run the validation code
         $errors = $this->getHelper()->validateQuote($quote);
 
