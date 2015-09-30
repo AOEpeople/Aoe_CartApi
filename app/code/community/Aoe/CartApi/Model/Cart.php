@@ -89,6 +89,9 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
         // Get a filter instance
         $filter = $this->getFilter();
 
+        // Get the embeds list
+        $embeds = $this->parseEmbeds($this->getRequest()->getParam('embed'));
+
         // Get raw outbound data
         $data = $this->loadResourceAttributes($resource, $filter->getAttributesToInclude());
 
@@ -145,7 +148,7 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
         $data = $filter->out($data);
 
         // Handle embeds - This happens after output filtering on purpose
-        foreach ($this->parseEmbeds($this->getRequest()->getParam('embed')) as $embed) {
+        foreach ($embeds as $embed) {
             switch ($embed) {
                 case 'items':
                     if ($this->_isSubCallAllowed('aoe_cartapi_item')) {
