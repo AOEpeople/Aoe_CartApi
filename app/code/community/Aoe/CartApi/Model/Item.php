@@ -54,7 +54,7 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
             case self::ACTION_TYPE_COLLECTION . self::OPERATION_CREATE:
                 $item = $this->createResource($quote, $this->getRequest()->getBodyParams());
                 $new = $item->isObjectNew();
-                if($quote->isObjectNew()) {
+                if ($quote->isObjectNew()) {
                     $this->saveQuote();
                 }
                 $item->save();
