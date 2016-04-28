@@ -173,7 +173,7 @@ Add an product to the cart. This will re-use existing items in the cart if possi
         "qty": 1
     }
 
-You can also post multiple items at once using the *items* parameter. If you are using *items* then *sku* and *qty* will not having any effect.
+You can also post multiple items at once using the *items* parameter. If you are using *items* then *sku* and *qty* will not have any effect.
 
 	{
 	     "items": [
