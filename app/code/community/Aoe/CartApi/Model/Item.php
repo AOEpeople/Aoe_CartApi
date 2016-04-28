@@ -295,23 +295,23 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
 
         // If there is no product with that SKU, throw an error
         if (!$product->getId()) {
-            $this->_critical('Invalid SKU', Mage_Api2_Model_Server::HTTP_BAD_REQUEST);
+            $this->_critical('Invalid SKU ' . $data['sku'], Mage_Api2_Model_Server::HTTP_BAD_REQUEST);
         }
 
         // If the SKU is not enabled, throw an error ("isInStock" is a badly named method)
         if (!$product->isInStock()) {
-            $this->_critical('Invalid SKU', Mage_Api2_Model_Server::HTTP_BAD_REQUEST);
+            $this->_critical('Invalid SKU ' . $data['sku'], Mage_Api2_Model_Server::HTTP_BAD_REQUEST);
         }
 
         // If the SKU is not visible for the current website, throw an error
         if (!$product->isVisibleInSiteVisibility()) {
-            $this->_critical('Invalid SKU', Mage_Api2_Model_Server::HTTP_BAD_REQUEST);
+            $this->_critical('Invalid SKU ' . $data['sku'], Mage_Api2_Model_Server::HTTP_BAD_REQUEST);
         }
 
         if (!Mage::app()->isSingleStoreMode()) {
             // If the SKU is not available for the current website, throw an error
             if (!is_array($product->getWebsiteIds()) || !in_array(Mage::app()->getStore()->getWebsiteId(), $product->getWebsiteIds())) {
-                $this->_critical('Invalid SKU', Mage_Api2_Model_Server::HTTP_BAD_REQUEST);
+                $this->_critical('Invalid SKU ' . $data['sku'], Mage_Api2_Model_Server::HTTP_BAD_REQUEST);
             }
         }
 
