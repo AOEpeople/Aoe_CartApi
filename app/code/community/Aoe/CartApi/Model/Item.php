@@ -52,21 +52,46 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
                 $this->_render($this->prepareCollection($quote));
                 break;
             case self::ACTION_TYPE_COLLECTION . self::OPERATION_CREATE:
-                $item = $this->createResource($quote, $this->getRequest()->getBodyParams());
-                $new = $item->isObjectNew();
-                if ($quote->isObjectNew()) {
+                $multipleItems = $this->getMultipleItems($this->getRequest()->getBodyParams());
+                if($multipleItems) {
+                    $data = [];
+                    $new = false;
+                    foreach ($multipleItems as $lineItem) {
+                        /** @var Mage_Sales_Model_Quote_Item $item */
+                        $item = $this->createResource($quote, $lineItem);
+                        if ($quote->isObjectNew()) {
+                            $this->saveQuote();
+                            $new = true;
+                        }
+                        $item->save();
+                        $data[] = $this->prepareResource($item);
+                    }
                     $this->saveQuote();
-                }
-                $item->save();
-                $this->saveQuote();
-                if ($new) {
-                    $this->getResponse()->setHttpResponseCode(Mage_Api2_Model_Server::HTTP_CREATED);
-                    $this->getResponse()->setHeader('Location', $this->_getLocation($item));
+                    if ($new) {
+                        $this->getResponse()->setHttpResponseCode(Mage_Api2_Model_Server::HTTP_CREATED);
+                        $this->getResponse()->setHeader('Location', $this->getRequest()->getPathInfo());
+                    } else {
+                        $this->getResponse()->setHttpResponseCode(Mage_Api2_Model_Server::HTTP_OK);
+                        $this->getResponse()->setHeader('Content-Location', $this->getRequest()->getPathInfo());
+                    }
+                    $this->_render($data);
                 } else {
-                    $this->getResponse()->setHttpResponseCode(Mage_Api2_Model_Server::HTTP_OK);
-                    $this->getResponse()->setHeader('Content-Location', $this->_getLocation($item));
+                    $item = $this->createResource($quote, $this->getRequest()->getBodyParams());
+                    $new = $item->isObjectNew();
+                    if ($quote->isObjectNew()) {
+                        $this->saveQuote();
+                    }
+                    $item->save();
+                    $this->saveQuote();
+                    if ($new) {
+                        $this->getResponse()->setHttpResponseCode(Mage_Api2_Model_Server::HTTP_CREATED);
+                        $this->getResponse()->setHeader('Location', $this->_getLocation($item));
+                    } else {
+                        $this->getResponse()->setHttpResponseCode(Mage_Api2_Model_Server::HTTP_OK);
+                        $this->getResponse()->setHeader('Content-Location', $this->_getLocation($item));
+                    }
+                    $this->_render($this->prepareResource($item));
                 }
-                $this->_render($this->prepareResource($item));
                 break;
             case self::ACTION_TYPE_COLLECTION . self::OPERATION_DELETE:
                 foreach ($quote->getAllVisibleItems() as $item) {
@@ -105,6 +130,20 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
             default:
                 $this->_critical(self::RESOURCE_METHOD_NOT_ALLOWED);
         }
+    }
+
+    /**
+     * Checks for the presence of "items" body param and being an array
+     *
+     * @param $bodyParams
+     * @return false|array
+     */
+    public function getMultipleItems($bodyParams) {
+        if(isset($bodyParams['items']) && is_array($bodyParams['items'])) {
+            return $bodyParams['items'];
+        }
+
+        return false;
     }
 
     /**
