@@ -53,7 +53,7 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
                 break;
             case self::ACTION_TYPE_COLLECTION . self::OPERATION_CREATE:
                 $multipleItems = $this->getMultipleItems($this->getRequest()->getBodyParams());
-                if($multipleItems) {
+                if ($multipleItems) {
                     $data = [];
                     $new = false;
                     if (!$quote->getId()) {
@@ -138,8 +138,9 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
      * @param $bodyParams
      * @return false|array
      */
-    public function getMultipleItems($bodyParams) {
-        if(isset($bodyParams['items']) && is_array($bodyParams['items'])) {
+    public function getMultipleItems($bodyParams)
+    {
+        if (isset($bodyParams['items']) && is_array($bodyParams['items'])) {
             return $bodyParams['items'];
         }
 
