@@ -56,17 +56,17 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
                 if($multipleItems) {
                     $data = [];
                     $new = false;
+                    if (!$quote->getId()) {
+                        $this->saveQuote();
+                        $new = true;
+                    }
                     foreach ($multipleItems as $lineItem) {
                         /** @var Mage_Sales_Model_Quote_Item $item */
                         $item = $this->createResource($quote, $lineItem);
-                        if ($quote->isObjectNew()) {
-                            $this->saveQuote();
-                            $new = true;
-                        }
+                        $this->saveQuote();
                         $item->save();
                         $data[] = $this->prepareResource($item);
                     }
-                    $this->saveQuote();
                     if ($new) {
                         $this->getResponse()->setHttpResponseCode(Mage_Api2_Model_Server::HTTP_CREATED);
                         $this->getResponse()->setHeader('Location', $this->getRequest()->getPathInfo());
@@ -78,7 +78,7 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
                 } else {
                     $item = $this->createResource($quote, $this->getRequest()->getBodyParams());
                     $new = $item->isObjectNew();
-                    if ($quote->isObjectNew()) {
+                    if (!$quote->getId()) {
                         $this->saveQuote();
                     }
                     $item->save();
