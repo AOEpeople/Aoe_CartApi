@@ -65,6 +65,8 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
                         $item = $this->createResource($quote, $lineItem);
                         $this->saveQuote();
                         $item->save();
+                    }
+                    foreach ($quote->getAllVisibleItems() as $item) {
                         $data[] = $this->prepareResource($item);
                     }
                     if ($new) {
