@@ -67,13 +67,15 @@ class Aoe_CartApi_Helper_Data extends Mage_Core_Helper_Data
 
         $quote->getShippingAddress()->setCollectShippingRates(true);
 
-        /** Dirty workaround where the detection of the cache entry where explicit enough THX magento **/
-        $quote->getShippingAddress()->unsetData('cached_items_all');
-        $quote->getShippingAddress()->unsetData('cached_items_nominal');
-        $quote->getShippingAddress()->unsetData('cached_items_nonnominal');
+        if($quote->getItemsCount() == 0) {
+            /** Dirty workaround where the detection of the cache entry where explicit enough THX magento **/
+            $quote->getShippingAddress()->unsetData('cached_items_all');
+            $quote->getShippingAddress()->unsetData('cached_items_nominal');
+            $quote->getShippingAddress()->unsetData('cached_items_nonnominal');
 
-        /** Force recollection of totals on every run */
-        $quote->setTotalsCollectedFlag(false);
+            /** Force recollection of totals on every run */
+            $quote->setTotalsCollectedFlag(false);
+        }
 
         $quote->collectTotals();
 
