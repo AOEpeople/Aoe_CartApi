@@ -63,9 +63,9 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
                     foreach ($multipleItems as $lineItem) {
                         /** @var Mage_Sales_Model_Quote_Item $item */
                         $item = $this->createResource($quote, $lineItem);
-                        $this->saveQuote();
                         $item->save();
                     }
+                    $this->saveQuote();
                     foreach ($quote->getAllVisibleItems() as $item) {
                         $data[] = $this->prepareResource($item);
                     }
