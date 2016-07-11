@@ -200,6 +200,12 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
                         $data['payment'] = $subModel->prepareResource($resource->getPayment());
                     }
                     break;
+                case 'payment_methods':
+                    if ($this->_isSubCallAllowed('aoe_cartapi_payment_methods')) {
+                        $subModel = $this->_getSubModel('aoe_cartapi_payment_methods', ['embed' => false]);
+                        $data['payment_methods'] = $subModel->prepareResource($resource);
+                    }
+                    break;
                 case 'validation':
                     $validationErrors = $resource->getData('__validation_errors__');
                     $data['validation'] = (is_array($validationErrors) ? $validationErrors : []);
@@ -295,6 +301,12 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
                         /** @var Aoe_CartApi_Model_Payment $subModel */
                         $subModel = $this->_getSubModel('aoe_cartapi_payment', []);
                         $subModel->updateResource($resource->getPayment(), $data['payment']);
+                    }
+                    break;
+                case 'payment_methods':
+                    if ($this->_isSubCallAllowed('aoe_cartapi_payment_methods')) {
+                        $subModel = $this->_getSubModel('aoe_cartapi_payment_methods', []);
+                        $subModel->updateResource($resource->getPayment(), $data['payment_methods']);
                     }
                     break;
             }
