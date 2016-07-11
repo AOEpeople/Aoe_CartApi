@@ -57,7 +57,7 @@ class Aoe_CartApi_Model_PaymentMethods extends Aoe_CartApi_Model_Resource
         $store = $resource->getStoreId();
         $total = $resource->getBaseSubtotal();
 
-        $methodsResult = array();
+        $methodsResult = [];
         $methods = Mage::helper('payment')->getStoreMethods($store, $resource);
 
         foreach ($methods as $method) {
@@ -66,12 +66,12 @@ class Aoe_CartApi_Model_PaymentMethods extends Aoe_CartApi_Model_Resource
                 $isRecurring = $resource->hasRecurringItems() && $method->canManageRecurringProfiles();
 
                 if ($total != 0 || $method->getCode() == 'free' || $isRecurring) {
-                    $methodsResult[] = array(
+                    $methodsResult[] = [
                         'code'       => $method->getCode(),
                         'title'      => $method->getTitle(),
                         'cc_types'   => $this->_getPaymentMethodAvailableCcTypes($method),
                         'block_type' => $method->getFormBlockType(),
-                    );
+                    ];
                 }
             }
         }
