@@ -348,6 +348,32 @@
                 </routes>
             </aoe_cartapi_payment>
 
+            <aoe_cartapi_payment_methods translate="title" module="Aoe_CartApi">
+                <versions>1</versions>
+                <group>aoe_cartapi</group>
+                <model>Aoe_CartApi/PaymentMethods</model>
+                <title>Payment Methods</title>
+                <sort_order>70</sort_order>
+                <privileges>
+                    <guest>
+                        <retrieve>1</retrieve>
+                    </guest>
+                    <customer>
+                        <retrieve>1</retrieve>
+                    </customer>
+                </privileges>
+                <attributes translate="" module="Aoe_CartApi">
+                    <method>Payment Method</method>
+                    <data>Payment Data</data>
+                </attributes>
+                <routes>
+                    <route_entity>
+                        <route>/cart/payment_methods</route>
+                        <action_type>entity</action_type>
+                    </route_entity>
+                </routes>
+            </aoe_cartapi_payment_methods>
+
             <aoe_cartapi_validate translate="title" module="Aoe_CartApi">
                 <versions>1</versions>
                 <group>aoe_cartapi</group>

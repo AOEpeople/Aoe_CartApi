@@ -82,6 +82,8 @@ Supported query parameters
         * billing_address
         * shipping_address
         * shipping_methods
+        * payment_methods (R)
+
 
 ### POST /api/rest/cart
 Update attributes of the cart resource. Using the 'embed' query parameter will allow updating of a limited subset of sub-resources as well.
@@ -107,6 +109,7 @@ Supported query parameters
         * billing_address (R/W)
         * shipping_address (R/W)
         * shipping_methods (R)
+        * payment_methods (R)
 
 ### DELETE /api/rest/cart
 Reset the cart and all sub-resources
@@ -520,6 +523,27 @@ Supported query parameters
         * method_title
         * description
         * price
+
+### GET /api/rest/cart/payment_methods
+Return a collection of available payment methods.
+**NOTE**: This collection changes as the cart data changes and depends on the store configuration.
+
+    [
+        {
+            "code": "braintree",
+            "title": "Credit Card ",
+            "cc_types": {
+                "AE": "American Express",
+                "VI": "Visa",
+                "MC": "MasterCard"
+               }
+        },
+        {
+            "code": "checkmo",
+            "title": "Check / Money order",
+            "cc_types": null
+        }
+  ]
 
 ## NOTES
 * This module is currently being written for PHP 5.4+ and Magento CE 1.8+ support only.
