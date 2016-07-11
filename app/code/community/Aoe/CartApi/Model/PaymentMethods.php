@@ -2,7 +2,7 @@
 
 class Aoe_CartApi_Model_PaymentMethods extends Aoe_CartApi_Model_Resource
 {
-    
+
     /**
      * Hash of external/internal attribute codes
      *
@@ -67,9 +67,10 @@ class Aoe_CartApi_Model_PaymentMethods extends Aoe_CartApi_Model_Resource
 
                 if ($total != 0 || $method->getCode() == 'free' || $isRecurring) {
                     $methodsResult[] = array(
-                        'code' => $method->getCode(),
-                        'title' => $method->getTitle(),
-                        'cc_types' => $this->_getPaymentMethodAvailableCcTypes($method),
+                        'code'       => $method->getCode(),
+                        'title'      => $method->getTitle(),
+                        'cc_types'   => $this->_getPaymentMethodAvailableCcTypes($method),
+                        'block_type' => $method->getFormBlockType(),
                     );
                 }
             }
@@ -139,7 +140,4 @@ class Aoe_CartApi_Model_PaymentMethods extends Aoe_CartApi_Model_Resource
 
         return $ccTypes;
     }
-
-
-
 }
