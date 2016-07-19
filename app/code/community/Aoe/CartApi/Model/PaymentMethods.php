@@ -22,11 +22,11 @@ class Aoe_CartApi_Model_PaymentMethods extends Aoe_CartApi_Model_Resource
      */
     public function dispatch()
     {
-        $resource = $this->loadQuote();
+        $quote = $this->loadQuote();
 
         switch ($this->getActionType() . $this->getOperation()) {
-            case self::ACTION_TYPE_ENTITY . self::OPERATION_RETRIEVE:
-                $this->_render($this->prepareResource($resource));
+            case self::ACTION_TYPE_COLLECTION . self::OPERATION_RETRIEVE:
+                $this->_render($this->prepareCollection($quote));
                 break;
             default:
                 $this->_critical(self::RESOURCE_METHOD_NOT_ALLOWED);
@@ -34,44 +34,41 @@ class Aoe_CartApi_Model_PaymentMethods extends Aoe_CartApi_Model_Resource
     }
 
     /**
-     * Prepare resource and return results
+     * Convert the resource model collection to an array
      *
-     * @param Mage_Sales_Model_Quote $resource
+     * @param Mage_Sales_Model_Quote $quote
      *
      * @return array
      */
-    public function prepareResource(Mage_Sales_Model_Quote $resource)
+    public function prepareCollection(Mage_Sales_Model_Quote $quote)
     {
         // Store current state
         $actionType = $this->getActionType();
         $operation = $this->getOperation();
 
         // Change state
-        $this->setActionType(self::ACTION_TYPE_ENTITY);
+        $this->setActionType(self::ACTION_TYPE_COLLECTION);
         $this->setOperation(self::OPERATION_RETRIEVE);
 
-        // Fire event
-        $data = new Varien_Object();
-        Mage::dispatchEvent('aoe_cartapi_payment_methods_prepare', ['data' => $data, 'resource' => $resource]);
+        $data = [];
 
-        $store = $resource->getStoreId();
-        $total = $resource->getBaseSubtotal();
+        // Load methods
+        $store = $quote->getStoreId();
+        $total = $quote->getBaseSubtotal();
+        $methods = Mage::helper('payment')->getStoreMethods($store, $quote);
 
-        $methodsResult = [];
-        $methods = Mage::helper('payment')->getStoreMethods($store, $resource);
+        // Get filter
+        $filter = $this->getFilter();
 
+        // Prepare rates
         foreach ($methods as $method) {
             /** @var $method Mage_Payment_Model_Method_Abstract */
-            if ($this->_canUsePaymentMethod($method, $resource)) {
-                $isRecurring = $resource->hasRecurringItems() && $method->canManageRecurringProfiles();
+            if ($this->_canUsePaymentMethod($method, $quote)) {
+                $isRecurring = $quote->hasRecurringItems() && $method->canManageRecurringProfiles();
 
                 if ($total != 0 || $method->getCode() == 'free' || $isRecurring) {
-                    $methodsResult[] = [
-                        'code'       => $method->getCode(),
-                        'title'      => $method->getTitle(),
-                        'cc_types'   => $this->_getPaymentMethodAvailableCcTypes($method),
-                        'block_type' => $method->getFormBlockType(),
-                    ];
+                    /** @var Mage_Sales_Model_Quote_Address_Rate $rate */
+                    $data[] = $this->prepareMethod($method, $filter);
                 }
             }
         }
@@ -81,7 +78,54 @@ class Aoe_CartApi_Model_PaymentMethods extends Aoe_CartApi_Model_Resource
         $this->setOperation($operation);
 
         // Return prepared outbound data
-        return $methodsResult;
+        return $data;
+    }
+
+    /**
+     * Prepare resource and return results
+     *
+     * @param Mage_Payment_Model_Method_Abstract $method
+     * @param Mage_Api2_Model_Acl_Filter $filter
+     *
+     * @return array
+     */
+    public function prepareMethod(Mage_Payment_Model_Method_Abstract $method, Mage_Api2_Model_Acl_Filter $filter)
+    {
+        // Get raw outbound data
+        $data = [];
+        $attributes = $filter->getAttributesToInclude();
+        $attributes = array_combine($attributes, $attributes);
+        $attributes = array_merge($attributes, array_intersect_key($this->attributeMap, $attributes));
+        foreach ($attributes as $externalKey => $internalKey) {
+            if ($externalKey === 'cc_types') {
+                $data[$externalKey] = $this->_getPaymentMethodAvailableCcTypes($method);
+            } else {
+                $data[$externalKey] = $method->getDataUsingMethod($internalKey);
+            }
+        }
+
+        // Fire event
+        $data = new Varien_Object($data);
+        Mage::dispatchEvent('aoe_cartapi_payment_method_prepare', ['data' => $data, 'filter' => $filter, 'resource' => $method]);
+        $data = $data->getData();
+
+        // Filter outbound data
+        $data = $filter->out($data);
+
+        // Fix data types
+        $data = $this->fixTypes($data);
+
+        // Add null values for missing data
+        foreach ($filter->getAttributesToInclude() as $code) {
+            if (!array_key_exists($code, $data)) {
+                $data[$code] = null;
+            }
+        }
+
+        // Sort the result by key
+        ksort($data);
+
+        return $data;
     }
 
     /**

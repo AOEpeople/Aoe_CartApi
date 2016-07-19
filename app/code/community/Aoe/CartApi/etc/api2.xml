@@ -363,13 +363,15 @@
                     </customer>
                 </privileges>
                 <attributes translate="" module="Aoe_CartApi">
-                    <method>Payment Method</method>
-                    <data>Payment Data</data>
+                    <code>Payment Method Code</code>
+                    <title>Payment Method Title</title>
+                    <cc_types>Payment CC Type</cc_types>
+                    <form_block_type>Payment Form Block Type</form_block_type>
                 </attributes>
                 <routes>
                     <route_entity>
                         <route>/cart/payment_methods</route>
-                        <action_type>entity</action_type>
+                        <action_type>collection</action_type>
                     </route_entity>
                 </routes>
             </aoe_cartapi_payment_methods>

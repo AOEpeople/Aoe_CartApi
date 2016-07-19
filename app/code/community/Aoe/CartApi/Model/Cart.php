@@ -203,7 +203,7 @@ class Aoe_CartApi_Model_Cart extends Aoe_CartApi_Model_Resource
                 case 'payment_methods':
                     if ($this->_isSubCallAllowed('aoe_cartapi_payment_methods')) {
                         $subModel = $this->_getSubModel('aoe_cartapi_payment_methods', ['embed' => false]);
-                        $data['payment_methods'] = $subModel->prepareResource($resource);
+                        $data['payment_methods'] = $subModel->prepareCollection($resource);
                     }
                     break;
                 case 'validation':
