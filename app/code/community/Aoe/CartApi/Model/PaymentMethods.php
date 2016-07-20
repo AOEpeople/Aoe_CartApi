@@ -52,24 +52,21 @@ class Aoe_CartApi_Model_PaymentMethods extends Aoe_CartApi_Model_Resource
 
         $data = [];
 
-        // Load methods
+        // Get store
         $store = $quote->getStoreId();
-        $total = $quote->getBaseSubtotal();
-        $methods = Mage::helper('payment')->getStoreMethods($store, $quote);
 
         // Get filter
         $filter = $this->getFilter();
 
-        // Prepare rates
-        foreach ($methods as $method) {
+        // Prepare methods
+        foreach (Mage::helper('payment')->getStoreMethods($store, $quote) as $method) {
             /** @var $method Mage_Payment_Model_Method_Abstract */
-            if ($this->_canUsePaymentMethod($method, $quote)) {
-                $isRecurring = $quote->hasRecurringItems() && $method->canManageRecurringProfiles();
-
-                if ($total != 0 || $method->getCode() == 'free' || $isRecurring) {
-                    /** @var Mage_Sales_Model_Quote_Address_Rate $rate */
-                    $data[] = $this->prepareMethod($method, $filter);
-                }
+            if ($this->_canUseMethod($method, $quote) && $method->isApplicableToQuote(
+                $quote,
+                Mage_Payment_Model_Method_Abstract::CHECK_ZERO_TOTAL
+            )) {
+                $method->setInfoInstance($quote->getPayment());
+                $data[] =  $this->prepareMethod($method, $filter);
             }
         }
 
@@ -129,38 +126,17 @@ class Aoe_CartApi_Model_PaymentMethods extends Aoe_CartApi_Model_Resource
     }
 
     /**
-     * Check to see if payment method can be used according to magento standard defintions
+     * Check payment method model
      *
-     * @param  $method
-     * @param  $quote
+     * @param Mage_Payment_Model_Method_Abstract $method
+     * @param Mage_Sales_Model_Quote $quote
      * @return bool
      */
-    protected function _canUsePaymentMethod($method, $quote)
+    protected function _canUseMethod($method, $quote)
     {
-        if (!($method->isGateway() || $method->canUseInternal())) {
-            return false;
-        }
-
-        if (!$method->canUseForCountry($quote->getBillingAddress()->getCountry())) {
-            return false;
-        }
-
-        if (!$method->canUseForCurrency(Mage::app()->getStore($quote->getStoreId())->getBaseCurrencyCode())) {
-            return false;
-        }
-
-        /**
-         * Checking for min/max order total for assigned payment method
-         */
-        $total = $quote->getBaseGrandTotal();
-        $minTotal = $method->getConfigData('min_order_total');
-        $maxTotal = $method->getConfigData('max_order_total');
-
-        if ((!empty($minTotal) && ($total < $minTotal)) || (!empty($maxTotal) && ($total > $maxTotal))) {
-            return false;
-        }
-
-        return true;
+        return $method->isApplicableToQuote($quote, Mage_Payment_Model_Method_Abstract::CHECK_USE_FOR_COUNTRY
+            | Mage_Payment_Model_Method_Abstract::CHECK_USE_FOR_CURRENCY
+            | Mage_Payment_Model_Method_Abstract::CHECK_ORDER_TOTAL_MIN_MAX);
     }
 
     /**
