@@ -62,9 +62,9 @@ class Aoe_CartApi_Model_PaymentMethods extends Aoe_CartApi_Model_Resource
         foreach (Mage::helper('payment')->getStoreMethods($store, $quote) as $method) {
             /** @var $method Mage_Payment_Model_Method_Abstract */
             if ($this->_canUseMethod($method, $quote) && $method->isApplicableToQuote(
-                    $quote,
-                    Mage_Payment_Model_Method_Abstract::CHECK_ZERO_TOTAL
-                )) {
+                $quote,
+                Mage_Payment_Model_Method_Abstract::CHECK_ZERO_TOTAL
+            )) {
                 $method->setInfoInstance($quote->getPayment());
                 $data[] =  $this->prepareMethod($method, $filter);
             }
@@ -136,8 +136,7 @@ class Aoe_CartApi_Model_PaymentMethods extends Aoe_CartApi_Model_Resource
     {
         return $method->isApplicableToQuote($quote, Mage_Payment_Model_Method_Abstract::CHECK_USE_FOR_COUNTRY
             | Mage_Payment_Model_Method_Abstract::CHECK_USE_FOR_CURRENCY
-            | Mage_Payment_Model_Method_Abstract::CHECK_ORDER_TOTAL_MIN_MAX
-        );
+            | Mage_Payment_Model_Method_Abstract::CHECK_ORDER_TOTAL_MIN_MAX);
     }
 
     /**
