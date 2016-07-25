@@ -108,19 +108,29 @@ class Aoe_CartApi_Model_Place extends Aoe_CartApi_Model_Resource
                 // Get the new order
                 $order = $service->getOrder();
 
-                // Send new order email - failure is just logged
-                try {
-                    if (method_exists($order, 'queueNewOrderEmail')) {
-                        $order->queueNewOrderEmail();
-                    } else {
-                        $order->sendNewOrderEmail();
+                /**
+                 * a flag to set that there will be redirect to third party after confirmation
+                 * eg: paypal standard ipn
+                 */
+                $redirectUrl = $quote->getPayment()->getOrderPlaceRedirectUrl();
+                /**
+                 * we only want to send to customer about new order when there is no redirect to third party
+                 */
+                if (!$redirectUrl && $order->getCanSendNewEmailFlag()) {
+                    // Send new order email - failure is just logged
+                    try {
+                        if (method_exists($order, 'queueNewOrderEmail')) {
+                            $order->queueNewOrderEmail();
+                        } else {
+                            $order->sendNewOrderEmail();
+                        }
+                    } catch (Exception $e) {
+                        Mage::logException($e);
                     }
-                } catch (Exception $e) {
-                    Mage::logException($e);
                 }
 
                 // Generate response
-                $data = new Varien_Object(['status' => 'success', 'order' => $order->getIncrementId(), 'url' => '']);
+                $data = new Varien_Object(['status' => 'success', 'order' => $order->getIncrementId(), 'url' => $redirectUrl]);
 
                 // Fire event - success
                 Mage::dispatchEvent('aoe_cartapi_cart_place_success', ['filter' => $filter, 'quote' => $quote, 'order' => $order, 'data' => $data]);
