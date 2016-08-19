@@ -54,15 +54,15 @@ class Aoe_CartApi_Helper_Data extends Mage_Core_Helper_Data
         $quote->getBillingAddress();
 
         // Email sync to be compatible with OPC and XMLconnect
-        if (!is_null($quote->getCustomerEmail()) && is_null($quote->getBillingAddress()->getEmail())) {
+        if ($quote->hasData('customer_email') && !$quote->getBillingAddress()->hasData('email')) {
             // Copy quote email to missing billing email
             $quote->getBillingAddress()->setEmail($quote->getCustomerEmail());
-        } elseif (is_null($quote->getCustomerEmail()) && !is_null($quote->getBillingAddress()->getEmail())) {
+        } elseif (!$quote->hasData('customer_email') && $quote->getBillingAddress()->hasData('email')) {
             // Copy billing email to missing quote email
             $quote->setCustomerEmail($quote->getBillingAddress()->getEmail());
-        } elseif (!is_null($quote->getCustomerEmail()) && !is_null($quote->getBillingAddress()->getEmail()) && $quote->getCustomerEmail() !== $quote->getBillingAddress()->getEmail()) {
-            // Sync quote email to match billing email
-            $quote->setCustomerEmail($quote->getBillingAddress()->getEmail());
+        } elseif ($quote->hasData('customer_email') && $quote->getBillingAddress()->hasData('email') && $quote->getCustomerEmail() !== $quote->getBillingAddress()->getEmail()) {
+            // Sync billing email to match quote email
+            $quote->getBillingAddress()->setEmail($quote->getCustomerEmail());
         }
 
         $quote->getShippingAddress()->setCollectShippingRates(true);
