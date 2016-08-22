@@ -199,6 +199,7 @@
                 </privileges>
                 <attributes translate="" module="Aoe_CartApi">
                     <customer_address_id>customer_address_id</customer_address_id>
+                    <save_in_address_book>save_in_address_book</save_in_address_book>
                     <prefix>prefix</prefix>
                     <firstname>firstname</firstname>
                     <middlename>middlename</middlename>
@@ -268,6 +269,7 @@
                 </privileges>
                 <attributes translate="" module="Aoe_CartApi">
                     <customer_address_id>customer_address_id</customer_address_id>
+                    <save_in_address_book>save_in_address_book</save_in_address_book>
                     <same_as_billing>same_as_billing</same_as_billing>
                     <prefix>prefix</prefix>
                     <firstname>firstname</firstname>

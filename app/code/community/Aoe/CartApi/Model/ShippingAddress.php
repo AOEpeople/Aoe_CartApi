@@ -163,15 +163,16 @@ class Aoe_CartApi_Model_ShippingAddress extends Aoe_CartApi_Model_Resource
         $data = $filter->in($data);
 
         // Check if the update is setting a customer address ID to use
-        if (array_key_exists('customer_address_id', $data)) {
+        if (array_key_exists('customer_address_id', $data) && $data['customer_address_id']) {
             /** @var Mage_Customer_Model_Address $customerAddress */
-            $customerAddress = Mage::getModel('customer/address')->load($data['id']);
+            $customerAddress = Mage::getModel('customer/address')->load($data['customer_address_id']);
             if ($customerAddress->getId()) {
                 if ($customerAddress->getCustomerId() != $resource->getQuote()->getCustomerId()) {
                     $this->_critical(Mage::helper('checkout')->__('Customer Address is not valid.'), Mage_Api2_Model_Server::HTTP_BAD_REQUEST);
                 }
                 $resource->importCustomerAddress($customerAddress);
                 $resource->setSaveInAddressBook(0);
+                $resource->setSameAsBilling(0);
             }
         } elseif (array_key_exists('same_as_billing', $data) && $data['same_as_billing']) {
             // Copy data from billing address
@@ -196,6 +197,10 @@ class Aoe_CartApi_Model_ShippingAddress extends Aoe_CartApi_Model_Resource
         if (!empty($addressErrors)) {
             $resource->setData('validation_errors', $addressErrors);
         }
+
+        // Fire event - after
+        $data = new Varien_Object($data);
+        Mage::dispatchEvent('aoe_cartapi_shippingaddress_update_after', ['data' => $data, 'filter' => $filter, 'resource' => $resource]);
 
         // Restore old state
         $this->setActionType($actionType);
