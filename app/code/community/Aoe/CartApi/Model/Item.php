@@ -296,6 +296,11 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
         // Sort the result by key
         ksort($data);
 
+        // Fire event
+        $data = new Varien_Object($data);
+        Mage::dispatchEvent('aoe_cartapi_item_prepare_after', ['data' => $data, 'filter' => $filter, 'resource' => $item]);
+        $data = $data->getData();
+
         return $data;
     }
 
