@@ -383,7 +383,7 @@ class Aoe_CartApi_Model_Item extends Aoe_CartApi_Model_Resource
 
             // This is to work around a bug in Mage_Sales_Model_Quote::addProductAdvanced
             // The method incorrectly returns $item when it SHOULD return $parentItem
-            if ($resource->getParentItem()) {
+            if ($resource instanceof Mage_Sales_Model_Quote_Item && $resource->getParentItem()) {
                 $resource = $resource->getParentItem();
             }
         } catch (Exception $e) {
