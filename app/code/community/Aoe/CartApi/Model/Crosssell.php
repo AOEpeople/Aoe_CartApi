@@ -30,6 +30,7 @@ class Aoe_CartApi_Model_Crosssell extends Aoe_CartApi_Model_Resource
         'min_sale_qty'      => 'float',
         'max_sale_qty'      => 'float',
         'price'             => 'currency',
+        'minimal_price'     => 'currency',
         'final_price'       => 'currency',
     ];
 
