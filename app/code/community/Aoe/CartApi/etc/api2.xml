@@ -164,6 +164,7 @@
                     <images>Images</images>
                     <is_in_stock>Stock Status</is_in_stock>
                     <price>Price</price>
+                    <minimal_price>Minimal Price</minimal_price>
                     <final_price>Final Price</final_price>
                     <is_saleable>Is Saleable</is_saleable>
                     <qty>Quantity</qty>
